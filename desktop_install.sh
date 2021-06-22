@@ -203,12 +203,22 @@ function configure_desktop {
   #KDE常用软件
   #split -a 2 -d -b 1M app.log.10 child
 
-  #网易云
-
-  if [ ! -d /home/$USER_NAME//Downloads/netease-cloud-music ]; then
-    su - $USER_NAME -c "git clone https://gitee.com/xeger/netease-cloud-music.git ~/Downloads/netease-cloud-music --depth 1"
-    /home/$USER_NAME/netease-cloud-music/install.sh
+  if [ ! -d /home/$USER_NAME/Downloads ]; then
+    su - $USER_NAME -c "mkdir Downloads"
   fi
+
+  #网易云
+  if [ ! -d /home/$USER_NAME/Downloads/netease-cloud-music ]; then
+    su - $USER_NAME -c "git clone https://gitee.com/xeger/netease-cloud-music.git ~/Downloads/netease-cloud-music --depth 1"
+    /home/$USER_NAME/Downloads/netease-cloud-music/install.sh
+  fi
+
+  if [ ! -d /home/$USER_NAME/Downloads/panon ]; then
+    su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
+    su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale;cd ..;kpackagetool5 -t Plasma/Applet --install plasmoid;kpackagetool5 -t Plasma/Applet --upgrade plasmoid"
+    su - $USER_NAME -c "cd $WORKDIR/resources/panon; cp -rf panon ~/.locale/share/plasma/plasmoids/."
+  fi
+  
 }
 
 function configure_background {
