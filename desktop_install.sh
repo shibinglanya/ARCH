@@ -201,6 +201,7 @@ function configure_desktop {
   installer xorg-server-xephyr
 
   #KDE常用软件
+  installer latte-dock
   #split -a 2 -d -b 1M app.log.10 child
 
   if [ ! -d /home/$USER_NAME/Downloads ]; then
@@ -224,6 +225,7 @@ function configure_desktop {
     su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
     su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale;cd ..; kpackagetool5 -t Plasma/Applet --install plasmoid;kpackagetool5 -t Plasma/Applet --upgrade plasmoid"
     su - $USER_NAME -c "cd $WORKDIR/resources/panon; cp -rf panon ~/.local/share/plasma/plasmoids/."
+    su - $USER_NAME -c "cd $WORKDIR/resources/kde; cp -rf * ~/.config/."
   fi
   
 }
