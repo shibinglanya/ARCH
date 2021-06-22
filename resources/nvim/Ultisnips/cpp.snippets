@@ -1,0 +1,98 @@
+snippet #i
+#include <${1:head_file}>
+endsnippet
+
+snippet main
+int main(int argc, char *argv[]) {
+	${0}
+	return 0;
+}
+endsnippet
+
+snippet if
+if (${1:condition}) {
+}
+endsnippet
+
+snippet ifc
+if constexpr (${1:condition}) {
+}
+endsnippet
+
+snippet else
+else {
+	${0}
+}
+endsnippet
+
+snippet switch
+switch (${1:condition}) {
+case ${2:constant_expression}:
+	break;
+default:
+	${3:;}
+}
+endsnippet
+
+snippet case
+case ${1:constant_expression}:
+	break;
+endsnippet
+
+snippet for
+for (${1:init-statement}; ${2:condition}; ${3:iteration_expression}) {
+}
+endsnippet
+
+snippet while
+while (${1:condition}) {
+}
+endsnippet
+
+snippet do
+do {
+} while (${1:condition});
+endsnippet
+
+snippet fori
+for (${2:auto i} = 0; `!p import re; snip.rv = re.split("[^\w]",t[2])[-1]` < ${1:end}; ++`!p snip.rv = re.split("[^\w]",t[2])[-1]`) {
+}
+endsnippet
+
+snippet forc
+for (auto it = $1${1/^.*?(-)?(>)?$/(?2::(?1:>:.))/}begin(); it != ${1:container}${1/^.*?(-)?(>)?$/(?2::(?1:>:.))/}end(); ++it) {
+}
+endsnippet
+
+snippet be "$1.begin(), $1.end() (beginend)"
+${1:v}${1/^.*?(-)?(>)?$/(?2::(?1:>:.))/}begin(), $1${1/^.*?(-)?(>)?$/(?2::(?1:>:.))/}end()
+endsnippet
+
+snippet class
+class $1 {
+public:
+	${1:class_head_name}(${2:parameter-list}) {
+	}
+};
+endsnippet
+
+snippet classp
+class $1 : public $3 {
+public:
+	${1:class_head_name}(${2:parameter-list}) : ${3:base_clause}(${4:args}) {
+	}
+};
+endsnippet
+
+snippet struct
+struct ${1:struct_head_name} {
+};
+endsnippet
+
+snippet namespace "namespace .. (namespace)"
+namespace ${1:ns_name} {
+
+$0
+
+} // namespace $1
+endsnippet

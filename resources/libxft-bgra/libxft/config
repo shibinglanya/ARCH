@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+[remote "origin"]
+	url = https://gitlab.freedesktop.org/xorg/lib/libxft.git
+	fetch = +refs/*:refs/*
+	mirror = true

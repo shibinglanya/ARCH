@@ -1,0 +1,154 @@
+{
+    "languageserver": {
+        "ccls-cpp": {
+            "command": "ccls",
+            "filetypes": [ "cpp" ],
+            "initializationOptions": {
+                "cache": { "directory": "" },
+                "index": { "onChange": true },
+                "diagnostics": { "onChange": 1 },
+                "clang": {
+                    "extraArgs": [ "-std=c++17", "-Wall", "-Wextra" ],
+                    "resourceDir": "/usr/lib/clang/12.0.0"
+                },
+                "highlight": { "lsRanges" : true }
+            }
+        },
+        "ccls-c": {
+            "command": "ccls",
+            "filetypes": [ "c" ],
+            "initializationOptions": {
+                "cache": { "directory": "" },
+                "index": { "onChange": true },
+                "diagnostics": { "onChange": 1 },
+                "clang": { "extraArgs": [ "-std=c11" ] },
+                "highlight": { "lsRanges" : true }
+            }
+        }
+    }, 
+    "diagnostic.errorSign": "┃",
+    "diagnostic.warningSign": "┃",
+    "diagnostic.infoSign": "┃",
+    "diagnostic.hintSign": "┃",
+    "signature.preferShownAbove":false,
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "suggest.completionItemKindLabels": {
+        "class": "\uf0e8",
+        "color": "\ue22b",
+        "constant": "\uf8fe",
+        "default": "\uf29c",
+        "enum": "\uf435",
+        "enumMember": "\uf02b",
+        "event": "\ufacd",
+        "field": "\uf93d",
+        "file": "\uf723",
+        "folder": "\uf115",
+        "function": "\u0192",
+        "interface": "\uf417",
+        "keyword": "\uf1de",
+        "method": "\uf6a6",
+        "module": "\uf40d",
+        "operator": "\uf915",
+        "property": "\ue624",
+        "reference": "\uf021",
+        "snippet": "\ue60b",
+        "struct": "\ufb44",
+        "text": "\ue612",
+        "typeParameter": "\uf728",
+        "unit": "\uf475",
+        "value": "\uf89f",
+        "variable": "\uf27d"
+    },
+    "explorer.file.column.indent.indentLine": true,
+	"explorer.file.showHiddenFiles": true,
+	"explorer.icon.enableNerdfont": true,
+	"explorer.keyMappingMode": "none",
+    "explorer.keyMappings.global": {
+        "i": false,
+
+        "gk": "expandablePrev",
+        "gj": "expandableNext",
+
+        "*": "toggleSelection",
+        "<tab>": "actionMenu",
+
+        "h": "collapse",
+        "l": ["expandable?", "expand", "open"],
+        "J": ["toggleSelection", "nodeNext"],
+        "K": ["toggleSelection", "nodePrev"],
+        "gl": "expandRecursive",
+        "gh": "collapseRecursive",
+        "<2-LeftMouse>": [
+          "expandable?",
+          ["expanded?", "collapse", "expand"],
+          "open"
+        ],
+        "o": ["expanded?", "collapse", "expand"],
+        "<cr>": "quit",
+        "e": "open",
+        "s": "open:split",
+        "S": "open:split:plain",
+        "E": "open:vsplit",
+        "t": "open:tab",
+        "<bs>": "gotoParent",
+        "gp": "preview:labeling",
+
+        "y": "copyFilepath",
+        "Y": "copyFilename",
+        "c": "copyFile",
+        "x": "cutFile",
+        "p": "pasteFile",
+        "d": "delete",
+        "D": "deleteForever",
+
+        "a": "addFile",
+        "A": "addDirectory",
+        "r": "rename",
+
+        ".": "toggleHidden",
+        "R": "refresh",
+
+        "?": "help",
+        "q": "quit",
+        "<esc>": "esc",
+        "X": "systemExecute",
+        "gd": "listDrive",
+
+        "f": "search",
+        "F": "searchRecursive",
+
+        "gf": "gotoSource:file",
+        "gb": "gotoSource:buffer",
+
+        "[[": "sourcePrev",
+        "]]": "sourceNext",
+
+        "[d": "diagnosticPrev",
+        "]d": "diagnosticNext",
+
+        "[c": "gitPrev",
+        "]c": "gitNext",
+        "<<": "gitStage",
+        ">>": "gitUnstage"
+    },
+    "explorer.floating.border.chars" :["─","│","─","│","╭","╮","╯","╰"],
+    "explorer.git.icon.rootStatus.ahead": "AHEAD",
+    "explorer.git.icon.rootStatus.behind": "BEHIND",
+    "git.addedSign.hlGroup": "GitGutterAdd",
+    "git.changedSign.hlGroup": "GitGutterChange",
+    "git.removedSign.hlGroup": "GitGutterDelete",
+    "git.topRemovedSign.hlGroup": "GitGutterDelete",
+    "git.changeRemovedSign.hlGroup": "GitGutterDelete",
+    "git.changedSign.text": "┃",
+    "git.addedSign.text": "┃",
+    "git.removedSign.text": "▁", 
+    "git.topRemovedSign.text": "▔",
+    "git.changeRemovedSign.text": "ﰣ",
+    "git.branchCharacter": "",
+    "git.showCommitInFloating": true,
+    "git.addGBlameToVirtualText": false,
+    "git.addGBlameToBufferVar": true,
+
+	"yank.enableCompletion": false,
+	"rainbow-fart.ffplay":"ffplay"
+}

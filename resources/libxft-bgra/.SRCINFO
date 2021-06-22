@@ -1,0 +1,23 @@
+pkgbase = libxft-bgra
+	pkgdesc = libXft with BGRA glyph (color emoji) rendering & scaling patches by Maxime Coste
+	pkgver = 2.3.3.r7.7808631e
+	pkgrel = 1
+	url = https://gitlab.freedesktop.org/xorg/lib/libxft.git
+	arch = x86_64
+	groups = modified
+	license = custom
+	makedepends = git
+	makedepends = pkgconf
+	depends = fontconfig
+	depends = libxrender
+	depends = curl
+	depends = xorg-util-macros
+	provides = libxft
+	conflicts = libxft
+	source = git+https://gitlab.freedesktop.org/xorg/lib/libxft.git
+	source = https://gitlab.freedesktop.org/xorg/lib/libxft/merge_requests/1.patch
+	md5sums = SKIP
+	md5sums = SKIP
+
+pkgname = libxft-bgra
+

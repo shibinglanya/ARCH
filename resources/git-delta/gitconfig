@@ -1,0 +1,24 @@
+[delta]
+	features = unobtrusive-line-numbers decorations
+	commit-decoration-style = yellow box
+	tabs = 2
+[delta "my_side-by-side"]
+	features = unobtrusive-line-numbers decorations
+	side-by-side = true
+	commit-decoration-style = yellow box
+	tabs = 2
+[delta "decorations"]
+	file-style                   = green italic bold
+	file-decoration-style        = "#444444" ul 
+	hunk-header-decoration-style = "#444444" box
+[delta "unobtrusive-line-numbers"]
+	line-numbers              = true
+	line-numbers-left-format  = "{nm:>1}│"
+	line-numbers-right-format = "{np:>1}│"
+	line-numbers-left-style   = "#444444"
+	line-numbers-right-style  = "#444444"
+	line-numbers-minus-style  = red
+	line-numbers-zero-style   = "#444444"
+	line-numbers-plus-style   = green
+[interactive]
+	diffFilter = delta --color-only

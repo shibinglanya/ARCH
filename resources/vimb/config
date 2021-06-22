@@ -1,0 +1,12 @@
+set minimum-font-size=18
+set sans-serif-font=微软雅黑
+set monospace-font=Source Code Pro
+
+set smooth-scrolling=true
+
+set download-path=~/download/
+
+set hardware-acceleration-policy=always
+set accelerated-2d-canvas=true
+set frame-flattening=true
+set hint-keys-same-length=true
