@@ -222,7 +222,7 @@ function configure_desktop {
   installer python-websockets
   if [ ! -d /home/$USER_NAME/Downloads/panon ]; then
     su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
-    su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale"
+    su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale;kpackagetool5 -t Plasma/Applet --install plasmoid;kpackagetool5 -t Plasma/Applet --upgrade plasmoid"
     su - $USER_NAME -c "cd $WORKDIR/resources/panon; cp -rf panon ~/.local/share/plasma/plasmoids/."
   fi
   
