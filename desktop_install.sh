@@ -204,12 +204,12 @@ function configure_desktop {
   #split -a 2 -d -b 1M app.log.10 child
 
   #网易云
-	su - $USER_NAME -c "cd $WORKDIR/resources/netease-cloud-music; cat netease-cloud-music* > /tmp/netease-cloud-music.tar.gz; mkdir /tmp/netease-cloud-music"
-	su - $USER_NAME -c "cd /tmp/netease-cloud-music; mkdir tar -zxvf ../netease-cloud-music.tar.gz"
-	su - $USER_NAME -c "cd /tmp/netease-cloud-music/gconf; yes 'y' | makepkg -si"
-	su - $USER_NAME -c "cd /tmp/netease-cloud-music/qcef; yes 'y' | makepkg -si"
-	su - $USER_NAME -c "cd /tmp/netease-cloud-music/netease-cloud-music; yes 'y' | makepkg -si"
-  cp $WORKDIR/resources/netease-cloud-music/netease-cloud-music.bash /opt/netease/netease-cloud-music/.
+	#su - $USER_NAME -c "cd $WORKDIR/resources/netease-cloud-music; cat netease-cloud-music* > /tmp/netease-cloud-music.tar.gz; mkdir /tmp/netease-cloud-music"
+	#su - $USER_NAME -c "cd /tmp/netease-cloud-music; mkdir tar -zxvf ../netease-cloud-music.tar.gz"
+	#su - $USER_NAME -c "cd /tmp/netease-cloud-music/gconf; yes 'y' | makepkg -si"
+	#su - $USER_NAME -c "cd /tmp/netease-cloud-music/qcef; yes 'y' | makepkg -si"
+	#su - $USER_NAME -c "cd /tmp/netease-cloud-music/netease-cloud-music; yes 'y' | makepkg -si"
+  #cp $WORKDIR/resources/netease-cloud-music/netease-cloud-music.bash /opt/netease/netease-cloud-music/.
 }
 
 function configure_background {
