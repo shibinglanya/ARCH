@@ -204,8 +204,11 @@ function configure_desktop {
   #split -a 2 -d -b 1M app.log.10 child
 
   #网易云
-	su - $USER_NAME -c "git clone https://gitee.com/xeger/netease-cloud-music.git --depth 1"
-  /home/$USER_NAME/netease-cloud-music/install.sh
+
+  if [ ! -d /home/$USER_NAME//Downloads/netease-cloud-music ]; then
+    su - $USER_NAME -c "git clone https://gitee.com/xeger/netease-cloud-music.git ~/Downloads/netease-cloud-music --depth 1"
+    /home/$USER_NAME/netease-cloud-music/install.sh
+  fi
 }
 
 function configure_background {
