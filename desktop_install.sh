@@ -214,6 +214,12 @@ function configure_desktop {
   fi
 
   installer cmake
+  installer qt5-websockets
+  installer python-docopt
+  installer python-numpy
+  installer python-pyaudio
+  installer python-cffi
+  installer python-websockets
   if [ ! -d /home/$USER_NAME/Downloads/panon ]; then
     su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
     su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale"
