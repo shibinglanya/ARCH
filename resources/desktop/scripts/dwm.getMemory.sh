@@ -42,7 +42,11 @@ l=`expr $l + 8`
 printf "💟%s^c#FFFF00^^f-%d^^r0,22,%d,30^^f%d^^d^" $info1 $l $l $l
 
 l=`expr ${#info2} \* 9`
-l=`expr $l + 21`
+if echo $info2 | grep '\.' 1>/dev/null 2>&1; then
+  l=`expr $l + 21`
+else
+  l=`expr $l + 25`
+fi
 printf " %s%s^c#008000^^f-%d^^r0,22,%d,30^^f%d^^d^\n" $icon $info2 $l $l $l
 #printf " $tmpstr"
 
