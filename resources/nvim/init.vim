@@ -204,7 +204,7 @@ function! BootstrapPlugConfig.DeployRainbow()
 	let g:rainbow_active = 1
   let ctermfgs = [2, 165, 1, 214]
   let parentheses = [
-        \ 'start=/\v(( )@<!\<|\<( )@!)((\s|\S|\n){-}( )@<!\>( )@!)@=/ end=/>/ fold',
+        \ 'start=/\v(( |\<)@<!\<|\<( |\<)@!)((\s|\S|\n){-}( )@<!\>( )@!)@=/ end=/>/ fold',
         \ 'start=/(/ end=/)/ fold', 
         \ 'start=/\[/ end=/\]/ fold', 
         \ 'start=/{/ end=/}/ fold'
