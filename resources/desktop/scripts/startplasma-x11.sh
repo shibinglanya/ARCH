@@ -1,9 +1,14 @@
 #!/bin/bash
 
+Xephyr -br -ac -noreset -screen 2560x1440 :1 &
+
 while [ "$(ps -a | grep Xephyr)" == "" ]
 do
   sleep 2
 done
+
+sleep 1
+DISPLAY=:1 startplasma-x11 &
 
 Display0_Clipboard=$(DISPLAY=:0 xsel --output --clipboard)
 Display1_Clipboard=$(DISPLAY=:1 xsel --output --clipboard)

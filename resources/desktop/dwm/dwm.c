@@ -1711,9 +1711,7 @@ void run(void) {
 
 void runAutostart(void) {
   system("cd ~/.config/scripts; ./autostart.sh &");
-  system("Xephyr -br -ac -noreset -screen 2560x1440 :1 &");
-  system("DISPLAY=:1 startplasma-x11 &");
-  system("bash ~/.config/scripts/detect-clipboard.sh &");
+  system("bash ~/.config/scripts/startplasma-x11.sh &");
 }
 
 void scan(void) {
