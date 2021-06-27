@@ -1382,8 +1382,8 @@ void manage(Window w, XWindowAttributes *wa) {
   wc.border_width = c->bw;
   if (!strcmp(c->name,
               "Xephyr on :1.0 (ctrl+shift grabs mouse and keyboard)")) {
-    c->x = -3;
-    c->y = -3;
+    c->x = 0;
+    c->y = 0;
   }
   XConfigureWindow(dpy, w, CWBorderWidth, &wc);
   if (strcmp(c->name, "Xephyr on :1.0 (ctrl+shift grabs mouse and keyboard)"))
