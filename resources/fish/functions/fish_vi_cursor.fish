@@ -50,7 +50,7 @@ function fish_vi_cursor -d 'Set cursor shape for different vi modes'
             and not string match -q 'xterm-kitty*' -- $TERM
             and not string match -q 'rxvt*' -- $TERM
             and not string match -q 'alacritty*' -- $TERM
-            and not string match -q 'tmux-*' -- $TERM
+            and not string match -q 'tmux-256color' -- $TERM
             return
         end
 
@@ -88,7 +88,7 @@ function fish_vi_cursor -d 'Set cursor shape for different vi modes'
     set -l tmux_prefix
     set -l tmux_postfix
     if set -q TMUX
-        set tmux_prefix echo -ne "'\ePtmux;\e'"
+        set tmux_prefix echo -ne "'\ePtmux;\e\e[6\e\\\\'"
         set tmux_postfix echo -ne "'\e\\\\'"
     end
 
