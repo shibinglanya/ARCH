@@ -372,6 +372,8 @@ function configure_tmux {
   installer tmux
 	su - $USER_NAME -c "cp -rf $WORKDIR/resources/tmux/.tmux.conf  ~/."
 	su - $USER_NAME -c "cp -rf $WORKDIR/resources/tmux/.tmux.conf.local  ~/."
+  cp $WORKDIR/resources/tmux/tmux@shibinglanya.service /etc/systemd/system/.
+  systemctl enable /etc/systemd/system/tmux@shibinglanya.service
 }
 
 
