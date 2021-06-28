@@ -450,7 +450,7 @@ endfunction
 Plug '~/.config/nvim/myplugin/ranger.vim'
 function! BootstrapPlugConfig.DeployRanger()
 	let g:ranger_map_keys = 0
-	map <leader>d :Ranger<CR>
+	map <silent> <leader>d :Ranger<CR>
 endfunction
 "╰────────────────────────────────────────────────────────────────────────────╯
 
