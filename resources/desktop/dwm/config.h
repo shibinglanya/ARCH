@@ -113,10 +113,10 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "alacritty", "-e", "tmux", NULL };
 static const char scratchpadname[] = "scratchpad";
-static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+static const char *scratchpadcmd[] = { "/home/shibinglanya/.config/scripts/tmux.start-st-terminal.sh", NULL };
 
 static const char *comptoncmd3[]  = { "chromium", NULL };
-static const char *comptoncmd4[]  = { "alacritty", "-e", "tmux", "attach", NULL };
+static const char *comptoncmd4[]  = { "/home/shibinglanya/.config/scripts/tmux.start-alacritty-terminal.sh", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
