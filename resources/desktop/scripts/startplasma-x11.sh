@@ -15,8 +15,14 @@ Display1_Clipboard=$(DISPLAY=:1 xsel --output --clipboard)
 
 while true
 do
-  sleep 1
+  sleep 0.1
   Var_Display0_Clipboard=$(DISPLAY=:0 xsel --output --clipboard)
+
+  if [ "$Var_Display0_Clipboard" == "" ]; then
+    echo "$Display0_Clipboard" | DISPLAY=:0 xsel --input --clipboard
+    continue
+  fi
+
   if [ "$Var_Display0_Clipboard" != "$Display0_Clipboard" ]; then
     Display0_Clipboard=$Var_Display0_Clipboard
     Display1_Clipboard=$Var_Display0_Clipboard
@@ -26,6 +32,7 @@ do
   fi
 
   Var_Display1_Clipboard=$(DISPLAY=:1 xsel --output --clipboard)
+  [ "$Var_Display1_Clipboard" == "" ] && continue
   if [ "$Var_Display1_Clipboard" != "$Display1_Clipboard" ]; then
     Display0_Clipboard=$Var_Display1_Clipboard
     Display1_Clipboard=$Var_Display1_Clipboard
