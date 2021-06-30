@@ -26,7 +26,7 @@ function get_cpubars() {
 
 while true; do
   stats=$(awk '/cpu[0-9]+/ {printf "%d %d %d\n", substr($1,4), ($2 + $3 + $4 + $5), $5 }' /proc/stat)
-  echo $(get_cpubars "$stats" "$old") > /tmp/tmux_cpubars
+  echo $(get_cpubars "$stats" "$old")$(rainbarf --tmux --width 40 --no-battery --rgb) > /tmp/tmux_cpubars
   old=$stats
   sleep 1
 done;
