@@ -198,9 +198,11 @@ function configure_desktop {
 
 
   #在DWM中嵌入KDE plasma，启动相关直接写入在dwm.c里。
-  installer kde-applications
-  installer plasma
-  installer xorg-server-xephyr
+  if ! which startplasma-x11 1>/dev/null 2>&1; then
+    installer kde-applications
+    installer plasma
+    installer xorg-server-xephyr
+  fi
 
   #KDE常用软件
   installer latte-dock
