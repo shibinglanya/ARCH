@@ -25,7 +25,27 @@ function fish_prompt
 		set_color normal
 		set __fp_info_for_count $__fp_info_for_count$argv[4]$argv[5]
 	end
-	_nim_prompt_wrapper_left green brblack green '' ''
+
+	function fish_mode_prompt
+	end
+
+	if test "$fish_key_bindings" = fish_vi_key_bindings 
+		or test "$fish_key_bindings" = fish_hybrid_key_bindings
+		set -g mode 
+		switch $fish_bind_mode
+			case default
+				set mode brred
+			case insert
+				set mode brblack
+			case replace_one
+				set mode brpurple
+			case replace
+				set mode brpurple
+			case visual
+				set mode brblue
+		end
+	end
+	_nim_prompt_wrapper_left green $mode green '' ''
 
 #PATH
 	set -l path (string replace -r '^/home/'"$USER"'($|/)' '~$1' $PWD)
@@ -57,18 +77,18 @@ function fish_prompt
 	set __fp_gitinfo_for_count (math $__fp_gitinfo_for_count + 1)
 
 	if test -n "$__fp_gitinfo_for_printing"
-		_nim_prompt_wrapper_left purple yellow brblack ' '$__fp_gitinfo_for_printing' ' ''
+		_nim_prompt_wrapper_left purple yellow $mode ' '$__fp_gitinfo_for_printing' ' ''
 	else
-		_nim_prompt_wrapper_left purple yellow brblack ''                          ''
+		_nim_prompt_wrapper_left purple yellow $mode ''                          ''
 	end
 
 ########################################################################
 #error_code
 	if test "$last_pipestatus" != 0
 		and test "$last_pipestatus" != 141
-		_nim_prompt_wrapper_left red brblack normal ' '$last_pipestatus' ' ' '
+		_nim_prompt_wrapper_left red $mode normal ' '$last_pipestatus' ' ' '
 	else
-		_nim_prompt_wrapper_left red brblack normal ""                     ' '
+		_nim_prompt_wrapper_left red $mode normal ""                     ' '
 	end
 
 ########################################################################
@@ -78,85 +98,88 @@ function fish_prompt
 
 
 	set __fp_info_for_count $__fp_info_for_count"                                 " #<<<<
-end
-
-
-
-
-function fish_right_prompt
-
-	function _nim_prompt_wrapper_right_aux
-		set_color normal
-		set_color $argv[2] -b $argv[3]
-		echo -n $argv[5]
-		set_color $argv[1] -b $argv[2]
-		echo -n $argv[4]
-		set_color normal
-	end
-
-	set -g _nim_prompt_wrapper_right_count 1
-	function _nim_prompt_wrapper_right
-		if test (math (string length "$__fp_info_for_count") + (string length $argv[1])) -lt $__fp_maximum_screen_width
-			if test (math $_nim_prompt_wrapper_right_count % 2) = 1
-				_nim_prompt_wrapper_right_aux brblack white   brblack ' '$argv[1]' ' $argv[2]
-			else
-				_nim_prompt_wrapper_right_aux white   brblack white   ' '$argv[1]' ' $argv[2]
-			end
-			set __fp_info_for_count $__fp_info_for_count$argv[1]
-			set _nim_prompt_wrapper_right_count (math $_nim_prompt_wrapper_right_count + 1)
-		end
-	end
 
 # Vi-mode
 # The default mode prompt would be prefixed, which ruins our alignment.
-	function fish_mode_prompt
-	end
-
-	if test "$fish_key_bindings" = fish_vi_key_bindings 
-		or test "$fish_key_bindings" = fish_hybrid_key_bindings
-		set -l mode 
-		switch $fish_bind_mode
-			case default
-				set mode (set_color white)NORMAL
-			case insert
-				set mode (set_color white)INSERT
-			case replace_one
-				set mode (set_color white)REPONE
-			case replace
-				set mode (set_color white)REPALL
-			case visual
-				set mode (set_color white)VISUAL
-		end
-		_nim_prompt_wrapper_right_aux white brblack normal " $mode " ''
-		set __fp_info_for_count $__fp_info_for_count" $mode "
-	end
-			
-
-
-
-
-########################################################################
-	
-	_nim_prompt_wrapper_right (date '+%H:%M:%S')        ''
-	_nim_prompt_wrapper_right "$USER@"(prompt_hostname) ''
-
-########################################################################
-
-
-
-
-	if test (math $_nim_prompt_wrapper_right_count % 2) = 1
-		_nim_prompt_wrapper_right_aux brblack white   brblack "" ''
-	else
-		_nim_prompt_wrapper_right_aux white   brblack white   "" ''
-	end
 end
 
 
-#function fish_command_not_found
-#    echo -n 'did not find command: ' 
-#    set_color normal
-#    set_color red
-#    echo $argv[1]
+
+
+#function fish_right_prompt
+#
+#	function _nim_prompt_wrapper_right_aux
+#		set_color normal
+#		set_color $argv[2] -b $argv[3]
+#		echo -n $argv[5]
+#		set_color $argv[1] -b $argv[2]
+#		echo -n $argv[4]
+#		set_color normal
+#	end
+#
+#	set -g _nim_prompt_wrapper_right_count 1
+#	function _nim_prompt_wrapper_right
+#		if test (math (string length "$__fp_info_for_count") + (string length $argv[1])) -lt $__fp_maximum_screen_width
+#			if test (math $_nim_prompt_wrapper_right_count % 2) = 1
+#				_nim_prompt_wrapper_right_aux brblack white   brblack ' '$argv[1]' ' $argv[2]
+#			else
+#				_nim_prompt_wrapper_right_aux white   brblack white   ' '$argv[1]' ' $argv[2]
+#			end
+#			set __fp_info_for_count $__fp_info_for_count$argv[1]
+#			set _nim_prompt_wrapper_right_count (math $_nim_prompt_wrapper_right_count + 1)
+#		end
+#	end
+#
+## Vi-mode
+## The default mode prompt would be prefixed, which ruins our alignment.
+#	function fish_mode_prompt
+#	end
+#
+#	if test "$fish_key_bindings" = fish_vi_key_bindings 
+#		or test "$fish_key_bindings" = fish_hybrid_key_bindings
+#		set -l mode 
+#		switch $fish_bind_mode
+#			case default
+#				set mode (set_color white)NORMAL
+#			case insert
+#				set mode (set_color white)INSERT
+#			case replace_one
+#				set mode (set_color white)REPONE
+#			case replace
+#				set mode (set_color white)REPALL
+#			case visual
+#				set mode (set_color white)VISUAL
+#		end
+#		_nim_prompt_wrapper_right_aux white brblack normal " $mode " ''
+#		set __fp_info_for_count $__fp_info_for_count" $mode "
+#	end
+#			
+#
+#
+#
+#
+#########################################################################
+#	
+#	_nim_prompt_wrapper_right (date '+%H:%M:%S')        ''
+#	_nim_prompt_wrapper_right "$USER@"(prompt_hostname) ''
+#
+#########################################################################
+#
+#
+#
+#
+#	if test (math $_nim_prompt_wrapper_right_count % 2) = 1
+#		_nim_prompt_wrapper_right_aux brblack white   brblack "" ''
+#	else
+#		_nim_prompt_wrapper_right_aux white   brblack white   "" ''
+#	end
 #end
+#
+#
+##function fish_command_not_found
+##    echo -n 'did not find command: ' 
+##    set_color normal
+##    set_color red
+##    echo $argv[1]
+##end
 
