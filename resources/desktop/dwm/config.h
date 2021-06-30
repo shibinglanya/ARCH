@@ -114,7 +114,8 @@ static const char *dmenucmd[] = { "dmenu_run", "-fn", dmenufont, "-nb", normbgco
 static const char *termcmd[]  = { "alacritty", NULL };
 
 static const char scratchpadname[] = "scratchpad";
-static const char *scratchpadcmd[] = { "/home/shibinglanya/.config/scripts/tmux.start-st-terminal.sh", NULL };
+static const char *scratchpadcmd1[] = { "/home/shibinglanya/.config/scripts/tmux.start-st-terminal.sh", NULL };
+static const char *scratchpadcmd2[] = { "st", "-t", scratchpadname, "-g", "138x34", NULL };
 
 static const char *comptoncmd3[]  = { "chromium", NULL };
 static const char *comptoncmd4[]  = { "/home/shibinglanya/.config/scripts/tmux.start-alacritty-terminal.sh", NULL };
@@ -125,7 +126,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_g,      spawn,          {.v = comptoncmd3 } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd1 } },
+	{ MODKEY|ShiftMask,             XK_grave,  togglescratch,  {.v = scratchpadcmd2 } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
