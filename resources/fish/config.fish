@@ -18,13 +18,15 @@ bind -s --user -M visual -m default y "commandline -s | xsel --input --clipboard
 bind -s --user -M default P "commandline -i -- (xsel --output --clipboard; echo)[1];"\
 			    "commandline -f backward-char repaint;"
 function M_default_p
-	if [ -z (xsel --output --clipboard) ]
+  set -l oc_string (xsel --output --clipboard)
+	if [ -z "$oc_string" ]
 		return
 	end
-	set -l pre_part (string sub --length (math (commandline -C) + 1) -- (commandline -b))
-	set -l last_part (string sub --start (math (commandline -C) + 2) -- (commandline -b))
-	commandline -r -- $pre_part(xsel --output --clipboard)$last_part
-	__set_cursor_pos (math (string length -- $pre_part) + (string length -- (xsel --output --clipboard)) - 1)
+  set -l tmp_string (commandline -b)
+	set -l pre_part (string sub --length (math (commandline -C) + 1) -- "$tmp_string")
+	set -l last_part (string sub --start (math (commandline -C) + 2) -- "$tmp_string")
+	commandline -r -- $pre_part$oc_string$last_part
+	__set_cursor_pos (math (string length -- "$pre_part") + (string length -- "$oc_string") - 1)
 	commandline -f repaint
 end
 bind -s --user -M default p M_default_p
@@ -35,24 +37,28 @@ function __set_cursor_pos
 end
 
 function M_visual_m_default_p
-	set -l e_pos (math -(string length -- (commandline -s)) + 1)
+  set -l s_string (commandline -s)
+  set -l c_string (commandline -c)
+  set -l b_string (commandline -b)
+  set -l oc_string (xsel --output --clipboard)
+	set -l e_pos (math -(string length -- "$s_string") + 1)
 	set -l pre_part
-	if string match '*'(string sub -e -1 -- (commandline -s)) -- (commandline -c) >/dev/null 2>&1
+	if string match '*'(string sub -e -1 -- "$s_string") -- "$c_string" >/dev/null 2>&1
 		if test $e_pos -eq 0
-				set pre_part (string sub -- (commandline -c))
+				set pre_part (string sub -- "$c_string")
 		else
-				set pre_part (string sub -e $e_pos -- (commandline -c))
+				set pre_part (string sub -e $e_pos -- "$c_string")
 		end
 	else
-		if test (string length -- (commandline -c)) -eq (string length -- (commandline))
-			set pre_part (string sub -e -(string length -- (commandline -s)) -- (commandline -c))
+		if test (string length -- "$c_string") -eq (string length -- (commandline))
+			set pre_part (string sub -e -(string length -- "$s_string") -- "$c_string")
 		else
-			set pre_part (commandline -c)
+			set pre_part "$c_string"
 		end
 	end
-	set -l last_part (string sub -s (math (string length -- $pre_part) + (string length -- (commandline -s)) + 1) -- (commandline -b))
-	commandline -r -- $pre_part(xsel --output --clipboard)$last_part
-	__set_cursor_pos (math (string length -- $pre_part) + (string length -- (xsel --output --clipboard)) - 1)
+	set -l last_part (string sub -s (math (string length -- "$pre_part") + (string length -- "$s_string") + 1) -- "$b_string")
+	commandline -r -- $pre_part$oc_string$last_part
+	__set_cursor_pos (math (string length -- "$pre_part") + (string length -- "$oc_string") - 1)
 	commandline -f end-selection repaint-mode
 end
 bind -s --user -M visual -m default p M_visual_m_default_p
