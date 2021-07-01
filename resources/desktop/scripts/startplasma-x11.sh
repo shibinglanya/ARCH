@@ -12,6 +12,7 @@ DISPLAY=:1 startplasma-x11 &
 
 Display0_Clipboard=`DISPLAY=:0 xsel --output --clipboard`
 Display1_Clipboard=`DISPLAY=:1 xsel --output --clipboard`
+Tmux_Clipboard=`tmux save-buffer -`
 
 while true
 do
@@ -40,5 +41,11 @@ do
     echo -n "$Display1_Clipboard" | DISPLAY=:0 xsel --input --clipboard
     #echo -n "$Display1_Clipboard" | DISPLAY=:1 xsel --input --clipboard
     continue
+  fi
+
+  Var_Tmux_Clipboard=`tmux save-buffer -`
+  if [ "$Tmux_Clipboard" !=  "$Var_Tmux_Clipboard" ]; then
+    Tmux_Clipboard=$Var_Tmux_Clipboard
+    tmux save-buffer - | xsel --input --clipboard
   fi
 done
