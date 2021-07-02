@@ -238,7 +238,8 @@ function configure_background {
     installer picom
     su - $USER_NAME -c "cp -f $WORKDIR/resources/background/picom.conf .config/."
 
-    installer mplayer
+    #installer mplayer
+    installer mpv
     su - $USER_NAME -c "cd $WORKDIR/resources/background/xwinwrap; make; sudo make install; make clean"
     if [ ! -d /home/$USER_NAME/.config/wallpapers ]; then
 	su - $USER_NAME -c 'mkdir .config/wallpapers'
