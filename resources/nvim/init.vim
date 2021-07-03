@@ -324,7 +324,8 @@ endfunction
 Plug 'yggdroot/indentline'
 function! BootstrapPlugConfig.DeployIndentline()
 	let g:indentLine_bufNameExclude = ['_.*', '.*\.json']
-let g:indentLine_char_list = ['│', '|', '¦', '┆', '┊']
+  "let g:indentLine_char_list = ['│', '|', '¦', '┆', '┊']
+  let g:indentLine_char_list = ['┊']
 endfunction
 "╰────────────────────────────────────────────────────────────────────────────╯
 
