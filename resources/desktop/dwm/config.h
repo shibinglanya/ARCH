@@ -80,6 +80,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   isfullscreen monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,   0,         -1 },
 	{ "st",  NULL,       NULL,       0,       1,     0,      -1 },
+	{ "mpv",  NULL,       NULL,       0,       1,     0,      -1 },
 	{ "Xephyr",  NULL,       NULL,       1<<2,       1,     1,      -1 },
 };
 
