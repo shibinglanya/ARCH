@@ -77,18 +77,18 @@ function fish_prompt
 	set __fp_gitinfo_for_count (math $__fp_gitinfo_for_count + 1)
 
 	if test -n "$__fp_gitinfo_for_printing"
-		_nim_prompt_wrapper_left purple yellow $mode ' '$__fp_gitinfo_for_printing' ' ''
+		_nim_prompt_wrapper_left purple yellow brblack ' '$__fp_gitinfo_for_printing' ' ''
 	else
-		_nim_prompt_wrapper_left purple yellow $mode ''                          ''
+		_nim_prompt_wrapper_left purple yellow brblack ''                          ''
 	end
 
 ########################################################################
 #error_code
 	if test "$last_pipestatus" != 0
 		and test "$last_pipestatus" != 141
-		_nim_prompt_wrapper_left red $mode normal ' '$last_pipestatus' ' ' '
+		_nim_prompt_wrapper_left red brblack normal ' '$last_pipestatus' ' ' '
 	else
-		_nim_prompt_wrapper_left red $mode normal ""                     ' '
+		_nim_prompt_wrapper_left red brblack normal ""                     ' '
 	end
 
 ########################################################################
