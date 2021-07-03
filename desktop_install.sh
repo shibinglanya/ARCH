@@ -310,7 +310,11 @@ function configure_nvim {
     sudo su - $USER_NAME -c "cp -rf $WORKDIR/resources/nvim ~/.config/."
 
     installer ranger
+
     installer ueberzug
+    path=`pacman -Ql ueberzug | grep /ueberzug/tmux_util.py`
+    cp "$WORKDIR/resources/ueberzug/tmux_util.py" "${path#* }"
+
     installer ffmpegthumbnailer
     sudo su - $USER_NAME -c "cp -rf $WORKDIR/resources/ranger ~/.config/."
 }

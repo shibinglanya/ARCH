@@ -47,9 +47,9 @@ endif
 function! OpenRangerIn(path, edit_cmd)
 	let currentPath = expand(a:path)
 	if isdirectory(currentPath)
-		silent exec '!'. s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"'
+		silent exec '!export VIM_RANGER=1 &&'. s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' "' . currentPath . '"'
 	else
-		silent exec '!'. s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"'
+		silent exec '!export VIM_RANGER=1 &&'. s:ranger_command . ' --choosefiles=' . s:choice_file_path . ' --selectfile="' . currentPath . '"'
 	endif
 	if filereadable(s:choice_file_path)
 		for f in readfile(s:choice_file_path)
