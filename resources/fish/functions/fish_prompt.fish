@@ -38,11 +38,11 @@ function fish_prompt
 			case insert
 				set mode brblack
 			case replace_one
-				set mode brpurple
+				set mode white
 			case replace
-				set mode brpurple
+				set mode white
 			case visual
-				set mode brblue
+				set mode yellow
 		end
 	end
 	_nim_prompt_wrapper_left green $mode green '' ''
