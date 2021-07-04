@@ -10,12 +10,12 @@ int main(int argc, char *argv[]) {
 endsnippet
 
 snippet if
-if (${1:condition}) {
+if (${1}) {
 }
 endsnippet
 
 snippet ifc
-if constexpr (${1:condition}) {
+if constexpr (${1}) {
 }
 endsnippet
 
@@ -26,8 +26,8 @@ else {
 endsnippet
 
 snippet switch
-switch (${1:condition}) {
-case ${2:constant_expression}:
+switch (${1}) {
+case ${2}:
 	break;
 default:
 	${3:;}
@@ -35,23 +35,23 @@ default:
 endsnippet
 
 snippet case
-case ${1:constant_expression}:
+case ${1}:
 	break;
 endsnippet
 
 snippet for
-for (${1:init-statement}; ${2:condition}; ${3:iteration_expression}) {
+for (${1}; ${2}; ${3}) {
 }
 endsnippet
 
 snippet while
-while (${1:condition}) {
+while (${1}) {
 }
 endsnippet
 
 snippet do
 do {
-} while (${1:condition});
+} while (${1});
 endsnippet
 
 snippet fori
@@ -71,7 +71,7 @@ endsnippet
 snippet class
 class $1 {
 public:
-	${1:class_head_name}(${2:parameter-list}) {
+	${1}(${2}) {
 	}
 };
 
@@ -80,20 +80,20 @@ endsnippet
 snippet classp
 class $1 : public $3 {
 public:
-	${1:class_head_name}(${2:parameter-list}) : ${3:base_clause}(${4:args}) {
+	${1}(${2}) : ${3}(${4}) {
 	}
 };
 
 endsnippet
 
 snippet struct
-struct ${1:struct_head_name} {
+struct ${1} {
 };
 
 endsnippet
 
 snippet namespace "namespace .. (namespace)"
-namespace ${1:ns_name} {
+namespace ${1} {
 
 $0
 
