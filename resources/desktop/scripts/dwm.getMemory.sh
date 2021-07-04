@@ -24,7 +24,7 @@ esac
 #tmpstr=$(echo $tmpstr | sed 's/#\[fg=cyan,bg=cyan\]/\^c#00FFFF\^/g')
 #tmpstr=$(echo $tmpstr | sed 's/#\[fg=default,bg=default\]/\^d\^/g')
 
-info1=$(free --mebi | sed -n '2{p;q}' | awk '{printf ("%2.2fGiB", ( $3 / 1024))}')" "
+info1=$(free --mebi | sed -n '2{p;q}' | awk '{printf ("%2.2fGiB", ( ($2-$7) / 1024))}')" "
 
 location=${1:-/}
 [ -d "$location" ] || exit
