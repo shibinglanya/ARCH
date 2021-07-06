@@ -3,9 +3,6 @@ Recent Files[$e]=t018ebefd7f39841b4d.jpg,file:$HOME/Pictures/background.jpg,file
 Recent URLs[$e]=file:$HOME/shared-folder/ArchFiles/,file:$HOME/shared-folder/,file:$HOME/,file:$HOME/Pictures/
 detailViewIconSize=16
 
-[PlasmaTransientsConfig]
-PreloadWeight=34
-
 [PlasmaViews][Panel 2][Defaults]
 thickness=28
 
