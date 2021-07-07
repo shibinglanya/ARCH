@@ -361,11 +361,14 @@ function configure_git_delta {
 		if ! grep "/home/$USER_NAME/.gitconfig" -e "\[delta\]"; then
 			su - $USER_NAME -c "cd $WORKDIR/resources/git-delta; cat gitconfig >> ~/.gitconfig"
 		fi
-		if ! grep "/home/$USER_NAME/.config/fish/config.fish" -e "alias diff "; then
-			su - $USER_NAME -c "cd /home/$USER_NAME/.config/fish; echo 'alias dif \"delta --features=my_side-by-side\"' >> config.fish"
-			su - $USER_NAME -c "cd /home/$USER_NAME/.config/fish; echo 'alias diff \"delta\"' >> config.fish"
-		fi
 	fi
+
+  if ! grep "/home/$USER_NAME/.config/fish/config.fish" -e "alias diff "; then
+    su - $USER_NAME -c "cd /home/$USER_NAME/.config/fish; echo 'alias diff \"delta\"' >> config.fish"
+  fi
+  if ! grep "/home/$USER_NAME/.config/fish/config.fish" -e "alias dif "; then
+    su - $USER_NAME -c "cd /home/$USER_NAME/.config/fish; echo 'alias dif \"delta --features=my_side-by-side\"' >> config.fish"
+  fi
 	su - $USER_NAME -c "git config --global core.pager 'delta'"
 }
 

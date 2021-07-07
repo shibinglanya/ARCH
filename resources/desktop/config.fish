@@ -5,3 +5,4 @@ if status --is-login
     and test $XDG_VTNR -eq 1
 	exec startx -- -keeptty
 end
+
