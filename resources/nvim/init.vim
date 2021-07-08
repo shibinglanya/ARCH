@@ -444,6 +444,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm i'  }
 function! BootstrapPlugConfig.DeployMarkdownPreview()
 	let g:mkdp_auto_start = 1
 	let g:mkdp_browser = 'surf'
+  let g:mkdp_theme = 'light' "可能会在后续跟新这个功能
 endfunction
 "╰────────────────────────────────────────────────────────────────────────────╯
 

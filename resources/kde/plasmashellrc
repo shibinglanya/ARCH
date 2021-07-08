@@ -1,7 +1,10 @@
 [KFileDialog Settings]
 Recent Files[$e]=t018ebefd7f39841b4d.jpg,file:$HOME/Pictures/background.jpg,file:$HOME/shared-folder/ArchFiles/t012cde4a5058c156b7.jpg,file:$HOME/shared-folder/ArchFiles/t014343af4dd388285f.jpg,file:$HOME/shared-folder/ArchFiles/t018ebefd7f39841b4d.jpg
-Recent URLs[$e]=file:$HOME/shared-folder/ArchFiles/,file:$HOME/shared-folder/,file:$HOME/,file:$HOME/Pictures/
+Recent URLs[$e]=file:$HOME/shared-folder/ArchFiles/,file:$HOME/shared-folder/,file:$HOME/,file:$HOME/Pictures/,file:$HOME/Documents/
 detailViewIconSize=16
+
+[PlasmaTransientsConfig]
+PreloadWeight=0
 
 [PlasmaViews][Panel 2][Defaults]
 thickness=28
@@ -14,9 +17,12 @@ panelOpacity=2
 panelVisibility=2
 
 [PlasmaViews][Panel 31][Defaults]
-thickness=20
+thickness=44
 
 [PlasmaViews][Panel 31][Horizontal2560]
+thickness=44
+
+[PlasmaViews][Panel 31][Vertical1440]
 thickness=20
 
 [PlasmaViews][Panel 32]
