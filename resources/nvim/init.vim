@@ -51,7 +51,9 @@ endif
 "引导插件配置
 let BootstrapPlugConfig = {}
 
-let g:plug_url_format = "https://git::@github.com.cnpmjs.org/%s.git"
+"let g:plug_url_format = "https://git::@github.com.cnpmjs.org/%s.git"
+let g:plug_url_format = "https://git::@ghproxy.com/https://github.com/%s.git"
+
 call plug#begin('~/.config/nvim/plugged')
 
 "VIM主题 
@@ -290,7 +292,7 @@ function! BootstrapPlugConfig.DeployCoc()
 	nnoremap <silent> <leader>y :<C-u>CocList -A --normal yank<cr>
 
 	let g:coc_global_extensions = [
-				\'coc-json', 'coc-vimlsp', 'coc-yank', 'coc-git']
+				\'coc-json', 'coc-vimlsp', 'coc-yank', 'coc-git',]
 				"\'coc-rainbow-fart']
 
 	autocmd VimEnter * hi GitGutterAdd                 cterm=none ctermfg	=	46
