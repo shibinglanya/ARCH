@@ -84,8 +84,37 @@ DialogWidth=720
 
 [Containments][1][Applets][64][Configuration][Effect]
 effectArgTrigger=true
+effectArgValues=5,2,0.003,,
+visualEffect=2.bar1ch
+
+[Containments][1][Applets][64][Configuration][General]
+autoExtend=false
+autoHide=true
+gravity=4
+preferredWidth=150
+
+[Containments][1][Applets][65]
+immutability=1
+plugin=panon
+
+[Containments][1][Applets][65][Configuration][Backend]
+backendIndex=1
+pulseaudioDevice=alsa_output.pci-0000_02_02.0.analog-stereo.monitor
+
+[Containments][1][Applets][65][Configuration][ConfigDialog]
+DialogHeight=558
+DialogWidth=720
+
+[Containments][1][Applets][65][Configuration][Effect]
 effectArgValues=5,2,0.003
 visualEffect=2.bar1ch
+
+[Containments][1][Applets][65][Configuration][General]
+autoExtend=false
+autoHide=true
+gravity=3
+inversion=true
+preferredWidth=150
 
 [Containments][1][ConfigDialog]
 DialogHeight=648
@@ -96,7 +125,7 @@ PreloadWeight=34
 
 [Containments][1][General]
 advanced=false
-appletOrder=4;3;57;64;5
+appletOrder=4;3;57;65;64;5
 autoDecreaseIconSize=false
 iconMargin=0
 iconSize=48
