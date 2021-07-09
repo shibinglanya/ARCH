@@ -290,8 +290,8 @@ function! BootstrapPlugConfig.DeployCoc()
 	nnoremap <silent> <leader>y :<C-u>CocList -A --normal yank<cr>
 
 	let g:coc_global_extensions = [
-				\'coc-json', 'coc-vimlsp', 'coc-yank', 'coc-git',
-				\'coc-rainbow-fart']
+				\'coc-json', 'coc-vimlsp', 'coc-yank', 'coc-git']
+				"\'coc-rainbow-fart']
 
 	autocmd VimEnter * hi GitGutterAdd                 cterm=none ctermfg	=	46
 	autocmd VimEnter * hi GitGutterChange              cterm=none ctermfg	=	226
