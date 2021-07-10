@@ -1,3 +1,5 @@
+execute plug_extension#init(expand('<sfile>'), expand('<slnum>')) | finish
+
 let mapleader = "\<space>"
 
 "添加配对的字符
@@ -48,27 +50,17 @@ if has('persistent_undo')
 	set undodir=~/.cache/nvim/tmp/undo,.
 endif
 
-"插件配置
-let PluginConfig = {}
 
 "let g:plug_url_format = "https://git::@github.com.cnpmjs.org/%s.git"
 let g:plug_url_format = "https://git::@ghproxy.com/https://github.com/%s.git"
 
 call plug#begin('~/.config/nvim/plugged')
 
-"VIM主题 
-"╭────────────────────────────────────────────────────────────────────────────╮
-Plug '~/.config/nvim/myplugin/vim-hybrid'
-function! PluginConfig.vim_hybrid()
+Plug '~/.config/nvim/myplugin/vim-hybrid' {
 	colorscheme hybrid
-endfunction
-"╰────────────────────────────────────────────────────────────────────────────╯
+}
 
-"状态栏 
-"╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-function! PluginConfig.vim_airline()
+Plug 'vim-airline/vim-airline' {
 	"允许在有未保存的修改时切换缓冲区
 	set hidden
 	let g:airline_filetype_overrides = {
@@ -77,8 +69,6 @@ function! PluginConfig.vim_airline()
 				\}
 	"启用标签箭头
 	let g:airline_powerline_fonts                   = 1
-	"主题
-	let g:airline_theme                             = 'dark'
 	"显示缓存编号
 	let g:airline#extensions#tabline#buffer_nr_show = 1
 	"显示顶部状态栏
@@ -103,23 +93,24 @@ function! PluginConfig.vim_airline()
 	let g:airline_symbols.linenr    = '☰'
 	let g:airline_symbols.maxlinenr = ''
 	let g:airline_symbols.dirty     = '⚡'
-endfunction
-"╰────────────────────────────────────────────────────────────────────────────╯
+}
 
-"快速光标跳转
-"╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'easymotion/vim-easymotion'
-Plug 'haya14busa/incsearch.vim'
-Plug 'haya14busa/incsearch-fuzzy.vim'
-Plug 'haya14busa/incsearch-easymotion.vim'
-function! PluginConfig.vim_easymotion()
+Plug 'vim-airline/vim-airline-themes' {
+	let g:airline_theme = 'dark'
+}
+
+Plug 'easymotion/vim-easymotion' {
 	"禁用默认映射
 	let g:EasyMotion_do_mapping = 0
 	"不区分大小写
 	let g:EasyMotion_smartcase  = 1
 
 	nmap <leader><leader> <Plug>(easymotion-overwin-f)
+}
 
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch-fuzzy.vim'
+Plug 'haya14busa/incsearch-easymotion.vim' {
 	function! s:config_easyfuzzymotion(...) abort
 		return extend(copy({
 					\'converters': [incsearch#config#fuzzyword#converter()],
@@ -131,13 +122,9 @@ function! PluginConfig.vim_easymotion()
 	endfunction
 	noremap <silent><expr> g/ incsearch#go(<SID>config_easyfuzzymotion())
 	noremap <silent> <leader>/ :let &hls = (&hls + 1)%2<CR>
-endfunction
-"╰────────────────────────────────────────────────────────────────────────────╯
+}
 
-"快速窗口操作
-"╭────────────────────────────────────────────────────────────────────────────╮
-Plug '~/.config/nvim/myplugin/vim-operate-windows-fast'
-function! PluginConfig.vim_operate_windows_fast()
+Plug '~/.config/nvim/myplugin/vim-operate-windows-fast' {
 	"把lens项目移到这个项目中了，并做了一些bug修复。
 	"Plug 'camspiers/lens.vim'
 	let g:lens#height_resize_max = 30
@@ -160,26 +147,20 @@ function! PluginConfig.vim_operate_windows_fast()
 	let g:OperateWindowsFast_OpenUpWindow       = '<C-n><C-k>'
 	let g:OperateWindowsFast_OpenRightWindow    = '<C-n><C-l>'
 	let g:OperateWindowsFast_CloseCurrentWindow = '<C-n><C-m>'
-endfunction
-"╰────────────────────────────────────────────────────────────────────────────╯
+}
 
-"快速括号操作
-"╭────────────────────────────────────────────────────────────────────────────╮
 "快速选择文本
 Plug 'gcmt/wildfire.vim'
 "快速删除、添加成对的符号
-Plug 'tpope/vim-surround'
+Plug 'tpope/vim-surround' {
+	let g:surround_no_insert_mappings = 1
+}
 "为vim-easyclip、vim-surround提供重复操作
 Plug 'tpope/vim-repeat'
-function! PluginConfig.vim_surround()
-	let g:surround_no_insert_mappings = 1
-endfunction
-"╰────────────────────────────────────────────────────────────────────────────╯
 
 "复制
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'svermeulen/vim-easyclip'
-function! PluginConfig.vim_easyclip()
+Plug 'svermeulen/vim-easyclip' {
 	let g:EasyClipAutoFormat             = 0 "粘贴后，自动调整缩进。
 	let g:EasyClipUseCutDefaults         = 0
 	let g:EasyClipUsePasteToggleDefaults = 0
@@ -187,22 +168,20 @@ function! PluginConfig.vim_easyclip()
 	nmap s  <Plug>MoveMotionPlug
 	xmap s  <Plug>MoveMotionXPlug
 	nmap ss <Plug>MoveMotionLinePlug
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "自动键入成对的括号
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'jiangmiao/auto-pairs'
-function! PluginConfig.auto_pairs()
+Plug 'jiangmiao/auto-pairs' {
 	let g:AutoPairsMultilineClose   = 0
 	let g:AutoPairsShortcutFastWrap = 0
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "给括号添加颜色
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'luochen1990/rainbow'
-function! PluginConfig.rainbow()
+Plug 'luochen1990/rainbow' {
 	let g:rainbow_active = 1
   let ctermfgs = [2, 165, 1, 214]
   let parentheses = [
@@ -217,26 +196,24 @@ function! PluginConfig.rainbow()
         \ 'operators': '_,_',
         \ 'parentheses': parentheses
         \}
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "单词标记颜色
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'lfv89/vim-interestingwords' 
-function! PluginConfig.vim_interestingwords()
+Plug 'lfv89/vim-interestingwords' {
 	let g:interestingWordsDefaultMappings = 0
 	nnoremap <silent> <leader>k :call InterestingWords('n')<cr>
 	vnoremap <silent> <leader>k :call InterestingWords('v')<cr>
 	nnoremap <silent> <leader>K :call UncolorAllWords()<cr>
 	nnoremap <silent>     n     :call WordNavigation(1)<cr>
 	nnoremap <silent>     N     :call WordNavigation(0)<cr>
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "快速文本对齐
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'junegunn/vim-easy-align'
-function! PluginConfig.vim_easy_align()
+Plug 'junegunn/vim-easy-align' {
 	"ex:
 	"	 = Around the 1st occurrences
 	"	2= Around the 2nd occurrences
@@ -248,25 +225,23 @@ function! PluginConfig.vim_easy_align()
 
 	" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 	"nmap ga <Plug>(EasyAlign)
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "文件自动存储
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug '~/.config/nvim/myplugin/vim-auto-save'
-function! PluginConfig.vim_auto_save()
+Plug '~/.config/nvim/myplugin/vim-auto-save' {
 	let g:auto_save           = 1
 	let g:auto_save_delay     = -1
 	let g:auto_save_events    = ['FocusLost']
 	let g:auto_save_silent    = 1
 	let g:auto_save_whitelist = ['*.c', '*.cpp', '*.hpp']
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "COC
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-function! PluginConfig.coc_nvim()
+Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 	set updatetime=50
 	set signcolumn=yes
 
@@ -310,60 +285,55 @@ function! PluginConfig.coc_nvim()
 
 	autocmd CursorHold * silent call CocActionAsync('highlight')
 	autocmd VimEnter * hi CocHighlightText cterm = italic,bold,underline
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "C++文件高亮
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug '~/.config/nvim/myplugin/lsp_cxx_highlight', { 'for': [ 'c', 'cpp' ] }
-function! PluginConfig.lsp_cxx_highlight()
+Plug '~/.config/nvim/myplugin/lsp_cxx_highlight', { 'for': [ 'c', 'cpp' ] } {
 	autocmd BufRead,BufNewFile *.h set filetype=c
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "缩进线
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'yggdroot/indentline'
-function! PluginConfig.indentline()
+Plug 'yggdroot/indentline' {
 	let g:indentLine_bufNameExclude = ['_.*', '.*\.json']
   "let g:indentLine_char_list = ['│', '|', '¦', '┆', '┊']
   let g:indentLine_char_list = ['┊']
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 
 "自定义按键配置basic
 "╭────────────────────────────────────────────────────────────────────────────╮
-function! PluginConfig.custom_config()
-	inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-	inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<right>"
-	inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<left>"
-	inoremap				<C-g> <Del>
-	"inoremap <silent> <C-l> <C-R>=<SID>cursor_to_ending()<CR>
-	inoremap <silent><expr> <C-l> pumvisible() ? "\<C-y>\<Esc>$a" : "\<Esc>$a"
-	"function! s:cursor_to_ending()
-	"    call container#bufiostream#init()
-	"    BufIOStream iostream
-	"    call iostream.init()
-	"    while !iostream.empty() && iostream.peek() != "\n"
-	"        call iostream.ignore()
-	"    endwhile
-	"    while !iostream.rempty() && iostream.rpeek() == ' '
-	"        call iostream.rignore()
-	"    endwhile
-	"    call iostream.flush()
-	"    return ""
-	"endfunction
+inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<right>"
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<left>"
+inoremap				<C-g> <Del>
+"inoremap <silent> <C-l> <C-R>=<SID>cursor_to_ending()<CR>
+inoremap <silent><expr> <C-l> pumvisible() ? "\<C-y>\<Esc>$a" : "\<Esc>$a"
+"function! s:cursor_to_ending()
+"    call container#bufiostream#init()
+"    BufIOStream iostream
+"    call iostream.init()
+"    while !iostream.empty() && iostream.peek() != "\n"
+"        call iostream.ignore()
+"    endwhile
+"    while !iostream.rempty() && iostream.rpeek() == ' '
+"        call iostream.rignore()
+"    endwhile
+"    call iostream.flush()
+"    return ""
+"endfunction
 
-	cnoremap <expr> <C-J> pumvisible() ? "\<C-N>" : "\<C-J>"
-	cnoremap <expr> <C-K> pumvisible() ? "\<C-P>" : "\<C-K>"
-endfunction
+cnoremap <expr> <C-J> pumvisible() ? "\<C-N>" : "\<C-J>"
+cnoremap <expr> <C-K> pumvisible() ? "\<C-P>" : "\<C-K>"
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug '~/.config/nvim/myplugin/FastCursorMovement.vim'
-function! PluginConfig.FastCursorMovement_vim()
+Plug '~/.config/nvim/myplugin/FastCursorMovement.vim' {
 	let g:FastCursorMovement_Pairs                   = "{},(),[],<>,\"\",''"
 	let g:FastCursorMovement_Words                   = '\w,[:],[.]'
 
@@ -377,14 +347,13 @@ function! PluginConfig.FastCursorMovement_vim()
 	let g:FastCursorMovement_RightCharacter_Backward = '<A-q>'
 	let g:FastCursorMovement_RightCharacter_Tail     = '<A-w>'
 	let g:FastCursorMovement_Tail                    = ''
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "FZF
 "╭────────────────────────────────────────────────────────────────────────────╮
 Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-function! PluginConfig.fzf_vim()
+Plug 'junegunn/fzf.vim' {
 	set rtp+=/usr/local/opt/fzf
 	set rtp+=~/.fzf
 	let g:fzf_preview_window = ['right:50%', 'ctrl-/']
@@ -399,13 +368,12 @@ function! PluginConfig.fzf_vim()
 	nnoremap <silent> <leader>b :Buffers<CR>
 	nnoremap <silent> <leader>f :Files ~<CR>
 	nnoremap <silent> <leader>z :Ag<CR>
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "翻译
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'voldikss/vim-translator'
-function! PluginConfig.vim_translator()
+Plug 'voldikss/vim-translator' {
 	let g:translator_default_engines    = ['bing', 'google', 'haici', 'youdao']
 	let g:translator_history_enable     = v:true
 	let g:translator_proxy_url          = ''
@@ -425,7 +393,7 @@ function! PluginConfig.vim_translator()
 	vmap <silent> <Leader>t <Plug>TranslateV
 	nmap <silent> <Leader>w <Plug>TranslateW
 	vmap <silent> <Leader>w <Plug>TranslateWV
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 
@@ -442,26 +410,23 @@ Plug 'lambdalisue/suda.vim'
 
 
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm i'  }
-function! PluginConfig.markdown_preview_nvim()
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm i'  } {
 	let g:mkdp_auto_start = 1
 	let g:mkdp_browser = 'surf'
   let g:mkdp_theme = 'light' "可能会在后续跟新这个功能
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "╭────────────────────────────────────────────────────────────────────────────╮
-Plug '~/.config/nvim/myplugin/ranger.vim'
-function! PluginConfig.ranger_vim()
+Plug '~/.config/nvim/myplugin/ranger.vim' {
 	let g:ranger_map_keys = 0
 	map <silent> <leader>d :Ranger<CR>
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "╭────────────────────────────────────────────────────────────────────────────╮
 Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-function! PluginConfig.vim_snippets()
+Plug 'honza/vim-snippets' {
 	let g:UltiSnipsExpandTrigger="<tab>"
 	let g:UltiSnipsJumpForwardTrigger="<c-u>"
 	let g:UltiSnipsJumpBackwardTrigger="<c-o>"
@@ -469,13 +434,12 @@ function! PluginConfig.vim_snippets()
 				\$HOME.'/.config/nvim/Ultisnips/', 
 				\$HOME.'/.config/nvim/plugged/vim-snippets/UltiSnips/'
 	\]
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 "╭────────────────────────────────────────────────────────────────────────────╮
 Plug 'google/vim-maktaba'
-Plug 'google/vim-codefmt'
-function! PluginConfig.vim_codefmt()
+Plug 'google/vim-codefmt' {
 	augroup autoformat_settings
 		" autocmd FileType bzl AutoFormatBuffer buildifier
 		autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
@@ -489,7 +453,7 @@ function! PluginConfig.vim_codefmt()
 		" autocmd FileType rust AutoFormatBuffer rustfmt
 		" autocmd FileType vue AutoFormatBuffer prettier
 	augroup END
-endfunction
+}
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 call plug#end()
@@ -497,10 +461,6 @@ if empty(glob('~/.config/nvim/plugged'))
 	"PlugUpgrade
 	PlugInstall
 endif
-
-for FuncKey in keys(PluginConfig)
-	execute 'call PluginConfig.'.FuncKey.'()'
-endfor
 
 function! s:verify_format_of_line(line)
 	let l:re = matchlist(a:line, '\v^\s*%(<autocmd>.*){-}\s*'
