@@ -291,6 +291,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 "C++文件高亮
 "╭────────────────────────────────────────────────────────────────────────────╮
 Plug '~/.config/nvim/myplugin/lsp_cxx_highlight', { 'for': [ 'c', 'cpp' ] } {
+  let g:cpp_concepts_highlight = 1
 	autocmd BufRead,BufNewFile *.h set filetype=c
 }
 "╰────────────────────────────────────────────────────────────────────────────╯

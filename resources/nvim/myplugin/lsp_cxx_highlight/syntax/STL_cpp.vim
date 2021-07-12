@@ -2273,8 +2273,8 @@ if version >= 508 || !exists("did_cpp_syntax_inits")
     command -nargs=+ HiLink hi def link <args>
   endif
   HiLink cppSTLbool         LspCxxHlSymNamespaceVariable
-  HiLink cppStorageClass    None
-  HiLink cppStatement       None
+  HiLink cppStorageClass    LspCxxHlKeyword
+  HiLink cppStatement     LspCxxHlKeyword  
   HiLink cppSTLfunction     LspCxxHlSymFunction
   HiLink cppSTLfunctional   LspCxxHlSymFunction
   HiLink cppSTLconstant     None
