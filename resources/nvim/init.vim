@@ -93,9 +93,8 @@ Plug 'vim-airline/vim-airline' {
 	let g:airline_symbols.linenr    = '☰'
 	let g:airline_symbols.maxlinenr = ''
 	let g:airline_symbols.dirty     = '⚡'
-}
 
-Plug 'vim-airline/vim-airline-themes' {
+  "~/.config/nvim/autoload/airline/themes/dark.vim
 	let g:airline_theme = 'dark'
 }
 
