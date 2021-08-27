@@ -78,11 +78,38 @@ Plug 'vim-airline/vim-airline' {
 
 	let g:airline_section_b = '%R' "显示是否只读
 	let g:airline_section_c = '%<%F' "显示文件路径
-	let g:airline_section_z = '%l/%L-%p%%'
+
+  function! g:ShowProgressBar()
+    let l:percent_bar = [
+          \   '〔■□□□□□□□□□〕',
+          \   '〔■■□□□□□□□□〕',
+          \   '〔■■■□□□□□□□〕',
+          \   '〔■■■■□□□□□□〕',
+          \   '〔■■■■■□□□□□〕',
+          \   '〔■■■■■■□□□□〕',
+          \   '〔■■■■■■■□□□〕',
+          \   '〔■■■■■■■■□□〕',
+          \   '〔■■■■■■■■■□〕',
+          \   '〔■■■■■■■■■■〕',
+          \]
+    let l:tl = line('$')
+    let l:cl = line('.')
+    let l:pos =float2nr(floor((len(l:percent_bar)-1.0)*l:cl/(l:tl)))
+    return l:percent_bar[l:pos]
+  endfunction
+
+  let g:airline_section_z = '%l%{g:ShowProgressBar()}%L'
+
+  "关闭空白符号统计
+  let g:airline#extensions#whitespace#enabled = 0
+
+  let airline#extensions#coc#warning_symbol = '⚠ '
+  let airline#extensions#coc#error_symbol = '✘ '
 
 	if !exists('g:airline_symbols')
 		let g:airline_symbols = {}
 	endif
+
 	let g:airline_left_sep          = ''
 	let g:airline_left_alt_sep      = ''
 	let g:airline_right_sep         = ''
