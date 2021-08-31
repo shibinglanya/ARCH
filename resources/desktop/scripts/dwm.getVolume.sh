@@ -33,5 +33,5 @@ fi
 
 l=`expr ${#vol}`
 l=`expr $l \* 9`
-l=`expr $l + 41`
+l=`expr $l + 42`
 printf "$icon $vol%%^c#0000FF^^f-%d^^r0,22,%d,30^^f%d^^d^\n" $l $l $l

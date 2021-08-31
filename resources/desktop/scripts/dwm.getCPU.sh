@@ -54,7 +54,7 @@ CPU_USAGE=`echo ${SYSTEM_IDLE} ${TOTAL_TIME} | awk '{printf "%.2f", 100-$1/$2*10
 
 l=`expr ${#CPU_USAGE}`
 l=`expr $l \* 9`
-l=`expr $l + 30`
+l=`expr $l + 32`
 
 printf "🚀$CPU_USAGE%%^c#FFA500^^f-%d^^r0,22,%d,30^^f%d^^d^\n" $l $l $l
 
