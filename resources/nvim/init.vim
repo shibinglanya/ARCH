@@ -486,6 +486,8 @@ Plug 'google/vim-codefmt' {
 
 "╭────────────────────────────────────────────────────────────────────────────╮
 nnoremap <silent> <leader>g :silent !st -g 158x46+408+200 -f "SauceCodePro Nerd Font Mono:pixelsize=18" -e lazygit<CR>
+
+command! -bang -nargs=0 Cd silent execute 'cd '.expand('%:p:h')
 "╰────────────────────────────────────────────────────────────────────────────╯
 
 call plug#end()
