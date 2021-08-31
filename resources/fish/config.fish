@@ -77,5 +77,10 @@ bind -s --user -M default -m visual V begin-selection beginning-of-line swap-sel
 bind -s --user u undo
 bind -s --user U redo
 
+bind \cg 'lazygit'
+if bind -M insert > /dev/null 2>&1
+  bind -M insert \cg 'lazygit'
+end
+alias rg 'ranger'
 
 

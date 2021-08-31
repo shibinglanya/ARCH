@@ -13,7 +13,7 @@ function MainMenu() {
     print_title "https://wiki.archlinux.org/index.php/Arch_Install_Scripts"
     print_info "The Arch Install Scripts are a set of Bash scripts that simplify Arch installation."
     pause
-    checklist=( 0 1 1 1 1 1 1 1 1 1 1 1 1 )
+    checklist=( 0 1 1 1 1 1 1 1 1 1 1 1 1 1 )
     while true; do
 	print_title "ARCHLINUX ULTIMATE INSTALL - https://github.com/tinyRatP/archlinux_install"
 	echo -e " ${BBlue}${WORKDIR}${Reset}"
@@ -30,6 +30,7 @@ function MainMenu() {
 	echo " 10) $(mainmenu_item "${checklist[10]}"	"git-delta")"
 	echo " 11) $(mainmenu_item "${checklist[11]}"	"alacritty")"
 	echo " 12) $(mainmenu_item "${checklist[12]}"	"tmux")"
+	echo " 13) $(mainmenu_item "${checklist[13]}"	"lazygit")"
 	echo ""
 	echo "  u) $(echo -e "user: ${BBlue}[ $USER_NAME/$USER_PASSWORD ]${Reset}")"
 	echo "  i) install"
@@ -51,6 +52,7 @@ function MainMenu() {
 		10) checklist[10]=1;;
 		11) checklist[11]=1;;
 		12) checklist[12]=1;;
+		13) checklist[13]=1;;
 		"u") set_login_user;;
 		"i") install;;
 		"q") exit 0;;
@@ -388,6 +390,9 @@ function configure_tmux {
   systemctl enable /etc/systemd/system/tmux@shibinglanya.service
 }
 
+function configure_lazygit {
+  installer lazygit
+}
 
 # COLORS {{{
     Bold=$(tput bold)
@@ -501,6 +506,7 @@ function desktop_install() {
 	configure_git_delta
 	configure_alacritty
 	configure_tmux
+  configure_lazygit
 }
 
 function install() {
