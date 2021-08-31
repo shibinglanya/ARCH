@@ -146,8 +146,8 @@ Plug 'haya14busa/incsearch-easymotion.vim' {
 					\'is_stay':    1
 					\}), get(a:, 1, {}))
 	endfunction
-	noremap <silent><expr> g/ incsearch#go(<SID>config_easyfuzzymotion())
-	noremap <silent> <leader>/ :let &hls = (&hls + 1)%2<CR>
+	noremap <silent><expr> <leader>/ incsearch#go(<SID>config_easyfuzzymotion())
+	noremap <silent> g/ :let &hls = (&hls + 1)%2<CR>
 }
 
 Plug '~/.config/nvim/myplugin/vim-operate-windows-fast' {
@@ -455,8 +455,8 @@ Plug '~/.config/nvim/myplugin/ranger.vim' {
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets' {
 	let g:UltiSnipsExpandTrigger="<tab>"
-	let g:UltiSnipsJumpForwardTrigger="<c-u>"
-	let g:UltiSnipsJumpBackwardTrigger="<c-o>"
+	let g:UltiSnipsJumpForwardTrigger="<c-o>"
+	let g:UltiSnipsJumpBackwardTrigger="<c-u>"
 	let g:UltiSnipsSnippetDirectories = [
 				\$HOME.'/.config/nvim/Ultisnips/', 
 				\$HOME.'/.config/nvim/plugged/vim-snippets/UltiSnips/'
