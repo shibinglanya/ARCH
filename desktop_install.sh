@@ -392,6 +392,7 @@ function configure_tmux {
 
 function configure_lazygit {
   installer lazygit
+	su - $USER_NAME -c "cp -rf $WORKDIR/resources/lazygit  ~/.config/."
 }
 
 # COLORS {{{
