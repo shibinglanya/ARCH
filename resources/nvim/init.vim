@@ -296,18 +296,18 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 				\'coc-json', 'coc-vimlsp', 'coc-yank', 'coc-git',]
 				"\'coc-rainbow-fart']
 
-	autocmd VimEnter * hi GitGutterAdd                 cterm=none ctermfg	=	46
-	autocmd VimEnter * hi GitGutterChange              cterm=none ctermfg	=	226
-	autocmd VimEnter * hi GitGutterDelete              cterm=none ctermfg	=	15
+	autocmd VimEnter * hi GitGutterAdd                   cterm=none ctermfg	=	46
+	autocmd VimEnter * hi GitGutterChange                cterm=none ctermfg	=	226
+	autocmd VimEnter * hi GitGutterDelete                cterm=none ctermfg	=	15
 
-	autocmd VimEnter * hi CocErrorSign                 cterm=bold ctermfg	=	9
-	autocmd VimEnter * hi CocWarningSign               cterm=bold ctermfg	=	130
-	autocmd VimEnter * hi CocErrorFloat                cterm=none ctermfg	=	9
-	autocmd VimEnter * hi CocWarningFloat              cterm=none ctermfg	=	130
-	autocmd VimEnter * hi CocErrorVirtualText          cterm=none ctermfg	=	9
-	autocmd VimEnter * hi CocWarningVirtualText        cterm=none ctermfg	=	130
-	autocmd VimEnter * hi CocExplorerDiagnosticError   cterm=none ctermfg	=	9
-	autocmd VimEnter * hi CocExplorerDiagnosticWarning cterm=none ctermfg	=	130
+	autocmd VimEnter * hi CocErrorSign                   cterm=bold ctermfg	=	9
+	autocmd VimEnter * hi CocWarningSign                 cterm=bold ctermfg	=	130
+	autocmd VimEnter * hi FgCocErrorFloatBgCocFloating   cterm=none ctermfg	=	9
+	autocmd VimEnter * hi FgCocWarningFloatBgCocFloating cterm=none ctermfg	=	130
+	autocmd VimEnter * hi CocErrorVirtualText            cterm=none ctermfg	=	9
+	autocmd VimEnter * hi CocWarningVirtualText          cterm=none ctermfg	=	130
+	autocmd VimEnter * hi CocExplorerDiagnosticError     cterm=none ctermfg	=	9
+	autocmd VimEnter * hi CocExplorerDiagnosticWarning   cterm=none ctermfg	=	130
 
 	autocmd CursorHold * silent call CocActionAsync('highlight')
 	autocmd VimEnter * hi CocHighlightText cterm = italic,bold,underline
