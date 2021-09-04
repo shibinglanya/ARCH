@@ -258,7 +258,7 @@ if exists("c_gnu")
 endif
 
 syn keyword	LspCxxHlStructure	struct union enum typedef
-syn match       LspCxxHlType           /const/
+syn match       LspCxxHlType           /\v<const>/
 
 syn match       LspCxxHlStorageClass   /\v<const\s*($|;|\{)@=/
 syn keyword	LspCxxHlStorageClass	static register auto volatile extern
