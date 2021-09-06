@@ -431,7 +431,7 @@ Plug 'lambdalisue/suda.vim'
 
 
 "插件存在bug，以后再处理吧。
-"Plug '~/.config/nvim/myplugin/vim-hlchunk'
+"Plug '~/.config/nvim/myplugin/mark-curly-braces'
 
 "Plug 'iamcco/mathjax-support-for-mkdp'
 
@@ -489,6 +489,18 @@ nnoremap <silent> <leader>g :silent !st -g 158x46+408+200 -f "SauceCodePro Nerd 
 
 command! -bang -nargs=0 Cd silent execute 'cd '.expand('%:p:h')
 "╰────────────────────────────────────────────────────────────────────────────╯
+
+Plug '~/.config/nvim/myplugin/gundo.vim' {
+  let g:gundo_prefer_python3 = 1
+  let g:gundo_close_on_revert = 1
+  let g:gundo_right = 0
+  let g:gundo_help = 0
+  let g:gundo_preview_bottom = 1
+  let g:gundo_width = 30
+  let g:gundo_return_on_revert = 0
+  let g:gundo_auto_preview = 1
+  nnoremap <silent> <leader>u :GundoToggle<CR>
+}
 
 call plug#end()
 if empty(glob('~/.config/nvim/plugged'))
