@@ -431,7 +431,7 @@ Plug 'lambdalisue/suda.vim'
 
 
 "插件存在bug，以后再处理吧。
-"Plug '~/.config/nvim/myplugin/mark-curly-braces'
+Plug '~/.config/nvim/myplugin/mark-curly-braces'
 
 "Plug 'iamcco/mathjax-support-for-mkdp'
 
