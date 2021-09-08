@@ -296,9 +296,9 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 				\'coc-json', 'coc-vimlsp', 'coc-yank', 'coc-git',]
 				"\'coc-rainbow-fart']
 
-	autocmd VimEnter * hi GitGutterAdd                   cterm=none ctermfg	=	46
-	autocmd VimEnter * hi GitGutterChange                cterm=none ctermfg	=	226
-	autocmd VimEnter * hi GitGutterDelete                cterm=none ctermfg	=	15
+	autocmd VimEnter * hi GitGutterAdd                   cterm=bold ctermfg	=	46
+	autocmd VimEnter * hi GitGutterChange                cterm=bold ctermfg	=	226
+	autocmd VimEnter * hi GitGutterDelete                cterm=bold ctermfg	=	15
 
 	autocmd VimEnter * hi CocErrorSign                   cterm=bold ctermfg	=	9
 	autocmd VimEnter * hi CocWarningSign                 cterm=bold ctermfg	=	130
