@@ -16,7 +16,7 @@ endfunction
 
 function! MCB_DetectSign(timer)
   let signs1 = getbufvar(bufnr(), 'mcb_signals', [])
-	let signs2 = sign_getplaced(bufnr(), {'group':'*'})[0].signs
+  let signs2 = sign_getplaced(bufnr(), {'group':'*'})[0].signs
   if signs2 != signs1
     call setbufvar(bufnr(), 'mcb_signals', signs2)
     doautocmd User MCB_SignChanged
@@ -26,12 +26,12 @@ endfunction
 function! detector#init()
   let s:timer = timer_start(100, 'MCB_DetectSign', { 'repeat': -1 })
   
-	augroup MarkCurlyBracesDetector
-		autocmd!
+  augroup MarkCurlyBracesDetector
+    autocmd!
     autocmd CursorMoved,CursorMovedI * 
           \ call timer_start(60, s:update_timer.clone(winnr()).task, {'repeat': 1})
     autocmd BufEnter * call s:detector()
-	augroup END
+  augroup END
 endfunction
 
 
