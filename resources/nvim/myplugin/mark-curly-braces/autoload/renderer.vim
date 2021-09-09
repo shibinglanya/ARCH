@@ -46,7 +46,7 @@ function! s:renderer() abort
   call sign_unplace(s:sign_back_define.group, {'buffer': l:bufnr})
   if [beg, end] != [0, 0]
     let s:place_flag = 0
-    for line in range(max([beg, line('.')-100]), min([end, line('.')+100]))
+    for line in range(max([beg, line('w0')-50]), min([end, line('w$')+50]))
       let b:sd_line = line
       doautocmd User SelfSignChanged
     endfor
