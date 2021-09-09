@@ -32,13 +32,10 @@ function! renderer#place(text, texthl)
 				\ {'lnum': b:sd_line, 'priority': priority})
 endfunction
 
-function! s:renderer(mandatory) abort
+function! s:renderer() abort
 	let l:bufnr = bufnr()
-	let [beg, end] = s:get_curly_braces_range()
 
-  if !a:mandatory && getbufvar(l:bufnr, 'sd_range', [0, 0]) == [beg, end]
-    return
-  endif
+  let [beg, end] = getwinvar(winnr(), 'mcb_curly_braces', [0, 0])
 
 	let l:signs = sign_getplaced(l:bufnr, {'group':'*'})[0].signs
 	let l:filter_self_signs = printf('\v^(%s|%s)\d+$', 
@@ -49,21 +46,21 @@ function! s:renderer(mandatory) abort
   call sign_unplace(s:sign_back_define.group, {'buffer': l:bufnr})
   if [beg, end] != [0, 0]
     let s:place_flag = 0
-    for line in range(beg, end)
+    for line in range(max([beg, line('.')-100]), min([end, line('.')+100]))
       let b:sd_line = line
       doautocmd User SelfSignChanged
     endfor
   endif
 
-		call sign_unplace(s:sign_front_define.group, {'buffer': l:bufnr})
-		let s:place_flag = 1
-		for sign_hidden in s:filter_low_priority(l:signs)
-			let b:sd_range = [beg, end]
-			let b:sd_sign = sign_hidden
-			let b:sd_sign_defined = sign_getdefined(sign_hidden.name)[0]
-			let b:sd_line = sign_hidden.lnum
-			doautocmd User OtherSignHidden
-		endfor
+  call sign_unplace(s:sign_front_define.group, {'buffer': l:bufnr})
+  let s:place_flag = 1
+  for sign_hidden in s:filter_low_priority(l:signs)
+    let b:sd_range = [beg, end]
+    let b:sd_sign = sign_hidden
+    let b:sd_sign_defined = sign_getdefined(sign_hidden.name)[0]
+    let b:sd_line = sign_hidden.lnum
+    doautocmd User OtherSignHidden
+  endfor
 endfunction
 
 
@@ -73,27 +70,9 @@ endfunction
 function! renderer#init()
 	augroup MarkCurlyBracesRenderer
 		autocmd!
-    autocmd User MCB_CurlyBracesListChanged,MCB_SignChanged call s:renderer(v:true)
-    autocmd User MCB_CursorMoved call s:renderer(v:false)
+    autocmd User MCB_CurlyBracesListChanged,MCB_SignChanged,MCB_CursorMoved call s:renderer()
 	augroup END
 endfunction
-
-func! s:get_curly_braces_range()
-    let list = getwinvar(winnr(), 'mcb_curly_braces_list', [])
-    let c = col('.') - 1
-    let l = line('.') - 1
-    for range in list
-      if l >= range.begin[0] && l <= range.end[0]
-        if l == range.begin[0] && c < range.begin[1]
-          continue
-        elseif l == range.end[0] && c > range.end[1]
-          continue
-        endif
-        return [range.begin[0]+1, range.end[0]+1]
-      endif
-    endfor
-		return [0, 0]
-endf
 
 "过滤优先级低的Sign
 function! s:filter_low_priority(signs)
