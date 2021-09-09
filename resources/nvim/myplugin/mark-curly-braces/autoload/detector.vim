@@ -34,69 +34,48 @@ function! detector#init()
 	augroup END
 endfunction
 
-function! s:matchstrpos(string, pat)
-  let result= []
-  let idx = 0
-  let idx = match(a:string, a:pat, idx)
-  while idx != -1
-    call add(result, idx)
-    let idx = match(a:string, a:pat, idx+1)
-  endwhile
-  return reverse(result)
+
+function! s:flags(flags)
+  let is_left = index(split(a:flags, '\zs'), 'b') != -1 ? v:true : v:false
+  let c = getline('.')[col('.') - 1]
+  if is_left
+    return a:flags. (c == '{' ? 'c' : '')
+  else
+    return a:flags. (c == '}' ? 'c' : '')
+  endif
 endfunction
 
-function! s:is_valid_curly_braces(lnum, col, beg_lnum, beg_col, end_lnum, end_col)
-  if a:beg_lnum == a:lnum && a:end_lnum == a:lnum
-    if a:col >= a:beg_col && a:col <= a:end_col
-      return v:true
-    endif
-  elseif a:beg_lnum == a:lnum && a:col >= a:beg_col
-    return v:true
-  elseif a:end_lnum == a:lnum && a:col <= a:end_col
-    return v:true
-  elseif a:lnum > a:beg_lnum && a:lnum < a:end_lnum
-    return v:true
-  endif
-  return v:false
+function! s:searchpair(start, middle, end, flags)
+  let save_cursor = getcurpos()
+  let [lnum, col] = searchpairpos(a:start, a:middle, a:end, s:flags(a:flags.'zW'))
+  while [lnum, col] != [0, 0] 
+        \ && synIDattr(synID(lnum, col, 0), 'name') =~ '\vcomment|string'
+    let new_cursor = copy(save_cursor)
+    let new_cursor[1] = lnum
+    let new_cursor[2] = col
+    call setpos('.', new_cursor)
+    let [lnum, col] = searchpairpos(a:start, a:middle, a:end, a:flags.'zW')
+  endwhile
+  call setpos('.', save_cursor)
+  return lnum
 endfunction
 
 function! s:detector()
-  let [lnum, col] = [line('.'), col('.')]
-  let lines = getline('^', lnum)
-  let lines[-1] = lines[-1][0:col-1]
-  for idx in range(len(lines)-1, 0, -1)
-    let beg_lnum = idx + 1
-    for idx in s:matchstrpos(lines[idx], '\V{')
-      let beg_col = idx + 1
-      let save_cursor = getcurpos()
-      let new_cursor = copy(save_cursor)
-      let new_cursor[1] = beg_lnum
-      let new_cursor[2] = beg_col
-      call setpos('.', new_cursor)
-      let [end_lnum, end_col] = searchpairpos('{', '', '}', 'n')
-      call setpos('.', save_cursor)
-      if s:is_valid_curly_braces(lnum, col, beg_lnum, beg_col, end_lnum, end_col)
-        let mcb_curly_braces = getwinvar(winnr(), 'mcb_curly_braces', [0, 0])
-        if mcb_curly_braces[0] != beg_lnum || mcb_curly_braces[1] != end_lnum
-          call setwinvar(winnr(), 'mcb_curly_braces', [beg_lnum, end_lnum]) 
-          doautocmd User MCB_CurlyBracesListChanged
-        else
-          doautocmd User MCB_CursorMoved
-        endif
-        return
-      endif
-    endfor
-  endfor
-  call setwinvar(winnr(), 'mcb_curly_braces', [0, 0]) 
-  doautocmd User MCB_CurlyBracesListChanged
+  let beg_lnum = s:searchpair('{', '', '}', 'b')
+  let end_lnum = s:searchpair('{', '', '}', '')
+
+  if beg_lnum == 0 || end_lnum == 0 || beg_lnum > end_lnum
+    let beg_lnum = 0
+    let end_lnum = 0
+  endif
+  
+  let mcb_curly_braces = getwinvar(winnr(), 'mcb_curly_braces', [0, 0])
+  if mcb_curly_braces[0] != beg_lnum || mcb_curly_braces[1] != end_lnum
+    call setwinvar(winnr(), 'mcb_curly_braces', [beg_lnum, end_lnum]) 
+    doautocmd User MCB_CurlyBracesListChanged
+  else
+    doautocmd User MCB_CursorMoved
+  endif
+  return
 endfunction
-
-
-
-
-
-
-
-
-
 
