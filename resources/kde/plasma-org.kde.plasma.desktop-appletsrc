@@ -6,10 +6,10 @@ wheel:Vertical;NoModifier=org.kde.switchdesktop
 [ActionPlugins][1]
 RightButton;NoModifier=org.kde.contextmenu
 
-[Containments][30]
+[Containments][31]
 ItemGeometries-2560x1440=
 ItemGeometriesHorizontal=
-activityId=af7ee860-d193-4830-a988-d5a7fcf2f9e0
+activityId=c73d0be7-b980-4532-80ac-f3a5c818a70d
 formfactor=0
 immutability=1
 lastScreen=0
@@ -17,16 +17,16 @@ location=0
 plugin=org.kde.plasma.folder
 wallpaperplugin=org.kde.image
 
-[Containments][30][ConfigDialog]
+[Containments][31][ConfigDialog]
 DialogHeight=558
 DialogWidth=720
 
-[Containments][30][General]
+[Containments][31][General]
 ToolBoxButtonState=topcenter
 ToolBoxButtonX=1016
 
-[Containments][30][Wallpaper][org.kde.image][General]
-Image=/home/shibinglanya/Pictures/background.jpg
+[Containments][31][Wallpaper][org.kde.image][General]
+Image=file:///home/shibinglanya/Pictures/background.jpg
 SlidePaths=/usr/share/wallpapers
 
 [Containments31Appletsts][30][Configuration][Backend]

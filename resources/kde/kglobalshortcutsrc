@@ -1,6 +1,7 @@
 [ActivityManager]
 _k_friendly_name=活动管理器
 switch-to-activity-23e8e47f-2b09-4690-bdba-f1baba920414=none,none,切换到活动“默认”
+switch-to-activity-c73d0be7-b980-4532-80ac-f3a5c818a70d=none,none,切换到活动“默认”
 
 [KDE Keyboard Layout Switcher]
 Switch keyboard layout to 英语（美国）=none,none,切换到键盘布局 英语（美国）
@@ -24,8 +25,8 @@ display=Display\tMeta+P,Display\tMeta+P,切换显示器
 
 [khotkeys]
 _k_friendly_name=自定义快捷键服务
-{29831e87-3781-4eb8-87b8-6364d5248e91}=Ctrl+Alt+T,none,Launch Konsole
 {d03619b6-9b3c-48cc-9d9c-a2aadb485550}=,none,搜索
+{fdfaa2b0-f9cc-4085-8f22-22933aab76a6}=Ctrl+Alt+T,none,Launch Konsole
 
 [kmix]
 _k_friendly_name=音频音量
@@ -38,11 +39,11 @@ mute=Volume Mute,Volume Mute,静音
 
 [ksmserver]
 Halt Without Confirmation=none,none,关机前不确认
-Lock Session=Meta+L\tCtrl+Alt+L\tScreensaver,Meta+L\tCtrl+Alt+L\tScreensaver,Lock Session
+Lock Session=Meta+L\tCtrl+Alt+L\tScreensaver,Meta+L\tCtrl+Alt+L\tScreensaver,锁定会话
 Log Out=Ctrl+Alt+Del,Ctrl+Alt+Del,注销
 Log Out Without Confirmation=none,none,注销前不确认
 Reboot Without Confirmation=none,none,重启前不确认
-_k_friendly_name=Session Management
+_k_friendly_name=会话管理
 
 [kwin]
 Activate Window Demanding Attention=Ctrl+Alt+A,Ctrl+Alt+A,激活请求注意的窗口
@@ -109,14 +110,14 @@ Walk Through Desktop List=none,none,遍历桌面列表
 Walk Through Desktop List (Reverse)=none,none,遍历桌面列表(反向)
 Walk Through Desktops=none,none,遍历桌面
 Walk Through Desktops (Reverse)=none,none,遍历桌面(反向)
-Walk Through Windows=Alt+Tab,Alt+Tab,Walk Through Windows
-Walk Through Windows (Reverse)=Alt+Shift+Backtab,Alt+Shift+Backtab,Walk Through Windows (Reverse)
-Walk Through Windows Alternative=none,none,Walk Through Windows Alternative
-Walk Through Windows Alternative (Reverse)=none,none,Walk Through Windows Alternative (Reverse)
-Walk Through Windows of Current Application=Alt+`,Alt+`,Walk Through Windows of Current Application
-Walk Through Windows of Current Application (Reverse)=Alt+~,Alt+~,Walk Through Windows of Current Application (Reverse)
-Walk Through Windows of Current Application Alternative=none,none,Walk Through Windows of Current Application Alternative
-Walk Through Windows of Current Application Alternative (Reverse)=none,none,Walk Through Windows of Current Application Alternative (Reverse)
+Walk Through Windows=Alt+Tab,Alt+Tab,遍历窗口
+Walk Through Windows (Reverse)=Alt+Shift+Backtab,Alt+Shift+Backtab,遍历窗口(反向)
+Walk Through Windows Alternative=none,none,遍历窗口候选
+Walk Through Windows Alternative (Reverse)=none,none,遍历窗口候选(反向)
+Walk Through Windows of Current Application=Alt+`,Alt+`,遍历当前应用程序窗口
+Walk Through Windows of Current Application (Reverse)=Alt+~,Alt+~,遍历当前应用程序窗口(反向)
+Walk Through Windows of Current Application Alternative=none,none,遍历当前应用程序窗口候选
+Walk Through Windows of Current Application Alternative (Reverse)=none,none,遍历当前应用程序窗口候选(反向)
 Window Above Other Windows=none,none,让窗口常居顶端
 Window Below Other Windows=none,none,让窗口常居底端
 Window Close=Alt+F4,Alt+F4,关闭窗口
@@ -288,7 +289,7 @@ Turn Off Screen=none,none,息屏
 _k_friendly_name=电源管理
 
 [plasmashell]
-_k_friendly_name=切换活动
+_k_friendly_name=Latte Dock
 activate task manager entry 1=Meta+1,Meta+1,激活任务管理器条目 1
 activate task manager entry 10=Meta+0,Meta+0,激活任务管理器条目 10
 activate task manager entry 2=Meta+2,Meta+2,激活任务管理器条目 2
@@ -300,6 +301,7 @@ activate task manager entry 7=Meta+7,Meta+7,激活任务管理器条目 7
 activate task manager entry 8=Meta+8,Meta+8,激活任务管理器条目 8
 activate task manager entry 9=Meta+9,Meta+9,激活任务管理器条目 9
 activate widget 3=Alt+F1,none,激活 程序启动器 部件
+activate widget 33=,none,激活 程序启动器 部件
 clear-history=none,none,清除剪贴板历史(L)
 clipboard_action=Ctrl+Alt+X,Ctrl+Alt+X,启用剪贴板动作
 cycleNextAction=none,none,下一个历史项
@@ -307,7 +309,7 @@ cyclePrevAction=none,none,上一个历史项
 edit_clipboard=none,none,编辑内容(E)...
 manage activities=Meta+Q,Meta+Q,显示活动切换器
 next activity=Meta+Tab,Meta+Tab,遍历活动
-previous activity=Meta+Shift+Tab,Meta+Shift+Tab,反向遍历活动
+previous activity=Meta+Shift+Tab,Meta+Shift+Tab,遍历活动 (反向)
 repeat_action=Ctrl+Alt+R,Ctrl+Alt+R,在当前剪贴板上手动执行动作
 show dashboard=Ctrl+F12,Ctrl+F12,显示桌面
 show-barcode=none,none,显示条形码(S)...

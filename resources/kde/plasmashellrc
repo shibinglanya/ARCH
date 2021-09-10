@@ -30,9 +30,12 @@ alignment=2
 panelOpacity=2
 
 [PlasmaViews][Panel 32][Defaults]
-thickness=36
+thickness=44
 
 [PlasmaViews][Panel 32][Horizontal2560]
+thickness=44
+
+[PlasmaViews][Panel 32][Vertical1440]
 thickness=36
 
 [ScreenConnectors]
