@@ -139,6 +139,10 @@ function configure_fish {
 
 
 function configure_desktop {
+    rm -R /etc/pacman.d/gnupg/ # 删除gnupg目录及其文件
+    pacman-key --init
+    pacman-key --populate archlinux
+
     installer fish
     chsh $USER_NAME -s /usr/bin/fish >/dev/null 2>&1
     installer numlockx     
@@ -220,21 +224,21 @@ function configure_desktop {
     /home/$USER_NAME/Downloads/netease-cloud-music/install.sh
   fi
 
-  #installer cmake
-  #installer qt5-websockets
-  #installer python-docopt
-  #installer python-numpy
-  #installer python-pyaudio
-  #installer python-cffi
-  #installer python-websockets
-  #if [ ! -d /home/$USER_NAME/Downloads/panon ]; then
-  #  #如果不在kde中使用panon，那么网易云每首歌曲播放之前，会产生卡吨。
-  #  su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
-  #  su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale;cd ..; kpackagetool5 -t Plasma/Applet --install plasmoid;kpackagetool5 -t Plasma/Applet --upgrade plasmoid"
-  #  su - $USER_NAME -c "cd $WORKDIR/resources/panon; cp -rf panon ~/.local/share/plasma/plasmoids/."
-  #  su - $USER_NAME -c "cd $WORKDIR/resources/kde; cp -rf * ~/.config/."
-  #  su - $USER_NAME -c "mv ~/.config/Pictures ~/."
-  #fi
+  installer cmake
+  installer qt5-websockets
+  installer python-docopt
+  installer python-numpy
+  installer python-pyaudio
+  installer python-cffi
+  installer python-websockets
+  if [ ! -d /home/$USER_NAME/Downloads/panon ]; then
+    #如果不在kde中使用panon，那么网易云每首歌曲播放之前，会产生卡吨。
+    su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
+    su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale;cd ..; kpackagetool5 -t Plasma/Applet --install plasmoid;kpackagetool5 -t Plasma/Applet --upgrade plasmoid"
+    su - $USER_NAME -c "cd $WORKDIR/resources/panon; cp -rf panon ~/.local/share/plasma/plasmoids/."
+    su - $USER_NAME -c "cd $WORKDIR/resources/kde; cp -rf * ~/.config/."
+    su - $USER_NAME -c "mv ~/.config/Pictures ~/."
+  fi
   
 }
 

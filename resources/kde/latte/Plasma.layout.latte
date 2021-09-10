@@ -11,6 +11,7 @@ immutability=1
 isPreferredForShortcuts=false
 lastScreen=-1
 location=4
+name=
 onPrimary=true
 plugin=org.kde.latte.containment
 raiseOnActivityChange=false
@@ -90,30 +91,7 @@ visualEffect=2.bar1ch
 [Containments][1][Applets][64][Configuration][General]
 autoExtend=false
 autoHide=true
-gravity=4
-preferredWidth=150
-
-[Containments][1][Applets][65]
-immutability=1
-plugin=panon
-
-[Containments][1][Applets][65][Configuration][Backend]
-backendIndex=1
-pulseaudioDevice=alsa_output.pci-0000_02_02.0.analog-stereo.monitor
-
-[Containments][1][Applets][65][Configuration][ConfigDialog]
-DialogHeight=558
-DialogWidth=720
-
-[Containments][1][Applets][65][Configuration][Effect]
-effectArgValues=5,2,0.003
-visualEffect=2.bar1ch
-
-[Containments][1][Applets][65][Configuration][General]
-autoExtend=false
-autoHide=true
-gravity=3
-inversion=true
+fps=20
 preferredWidth=150
 
 [Containments][1][ConfigDialog]
@@ -125,7 +103,9 @@ PreloadWeight=34
 
 [Containments][1][General]
 advanced=false
-appletOrder=4;3;57;65;64;5
+alignment=10
+alignmentUpgraded=true
+appletOrder=4;3;57;64;5
 autoDecreaseIconSize=false
 iconMargin=0
 iconSize=48
@@ -136,10 +116,12 @@ panelSize=10
 panelTransparency=64
 shadowOpacity=35
 shadowSize=45
+shadowsUpgraded=true
 showGlow=false
 shrinkThickMargins=true
-splitterPosition=3
-splitterPosition2=4
+splitterPosition=4
+splitterPosition2=5
+tasksUpgraded=true
 zoomLevel=2
 
 [Containments][1][Indicator]
@@ -272,13 +254,20 @@ hiddenItems=KMix,Plasma_microphone
 knownItems=org.kde.plasma.networkmanagement,org.kde.ktp-contactlist,org.kde.plasma.clipboard,org.kde.plasma.printmanager,org.kde.kdeconnect,org.kde.plasma.battery,org.kde.plasma.bluetooth,org.kde.plasma.notifications,org.kde.plasma.devicenotifier,org.kde.plasma.volume,org.kde.plasma.mediacontroller,org.kde.plasma.nightcolorcontrol,org.kde.plasma.keyboardindicator,org.kde.plasma.keyboardlayout,org.kde.plasma.vault
 
 [LayoutSettings]
-activities=
+activities={free-activities}
 background=
+backgroundStyle=0
 color=lightskyblue
+customBackground=
+customTextColor=
+disableBordersForMaximizedWindows=false
 globalLaunchers=
-lastUsedActivity=af7ee860-d193-4830-a988-d5a7fcf2f9e0
+icon=
+lastUsedActivity=b87085d7-2581-4f04-af6c-f81d21869f39
 launchers=
+popUpMargin=-1
 preferredForShortcutsTouched=false
+schemeFile=
 showInMenu=true
 textColor=fcfcfc
 version=2
