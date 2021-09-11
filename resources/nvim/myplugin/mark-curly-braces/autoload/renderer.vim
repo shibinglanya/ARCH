@@ -47,15 +47,20 @@ function! s:create_nvim_win(lnum, row, string)
   return win
 endfunction
 
-function! s:update_sign(win, lnum, len)
-  let signs = s:filter_low_priority(
-        \ sign_getplaced(bufnr(), {'group':'*'})[0].signs)
-  for sign in signs
+function! s:get_signs()
+  let signs = sign_getplaced(bufnr(), {'group':'*'})[0].signs
+  "过滤自身的sign
+  let signs =  filter(signs, {->v:val.id != g:sign_detector#id})
+  let signs = s:filter_low_priority(signs)
+  return signs
+endfunction
+
+function! s:update_sign(win, signs, lnum, len)
+  for sign in a:signs
     if sign.lnum == a:lnum
-      let name = sign_getdefined(sign.name)[0].texthl
-      highlight MyGroup ctermbg=green guibg=green
+      let sign_define = sign_getdefined(sign.name)[0]
       call win_execute(a:win, 
-        \ 'call matchaddpos("'. name .'", [[2, 1, '. a:len. ']])')
+        \ 'call matchaddpos("'. sign_define.texthl .'", [[2, 1, '. a:len. ']])')
       return
     endif
   endfor
@@ -63,23 +68,34 @@ function! s:update_sign(win, lnum, len)
     \ 'call matchaddpos("SignColumn", [[2, 1, '. a:len. ']])')
 endfunction
 
+function! s:get_sign_text(lnum, signs)
+  for sign in a:signs
+    if sign.lnum == a:lnum
+      return sign_getdefined(sign.name)[0].text
+    endif
+  endfor
+  return '  '
+endfunction
+
 function! s:render_up_win(beg)
   let max_lnum_len = len(line('$'))
   let numberwidth = &numberwidth - 1
   let numberwidth = max_lnum_len > numberwidth ? max_lnum_len : numberwidth
-  let sign_len = 2
-  let prefix = eval('printf("'. repeat(' ', sign_len).'%'. numberwidth. 'd ", '. a:beg. ')')
+  let signs = s:get_signs()
+  call log#print(signs)
+  let prefix = eval('printf("'. s:get_sign_text(a:beg, signs).'%'. numberwidth. 'd ", '. a:beg. ')')
   let string = prefix. getline(a:beg)
   let mcb_up_win = getwinvar(winnr(), 'mcb_up_win', {})
   if !empty(mcb_up_win)
     if mcb_up_win.string == string
-      "这个可能由MCB_SignChanged触发Sign变更
-      call s:update_sign(mcb_up_win.wid, a:beg, len(prefix))
+      "由MCB_SignChanged触发Sign变更
+      call s:update_sign(mcb_up_win.wid, signs, a:beg, len(prefix))
       return
     else
       call nvim_win_close(mcb_up_win.wid, 1)
     endif
   endif
+
 
   "创建窗口
   let win = s:create_nvim_win(a:beg, 0, string)
@@ -93,7 +109,7 @@ function! s:render_up_win(beg)
           \ 'call matchaddpos("'. name.'", [[2, '. (col+len(prefix)). ']])')
   endfor
 
-  call s:update_sign(win, a:beg, len(prefix))
+  call s:update_sign(win, signs, a:beg, len(prefix))
 endfunction
 
 
@@ -112,7 +128,7 @@ function! s:render_down_win(end)
   call setwinvar(winnr(), 'mcb_down_win', {'wid': win, 'string': string})
 endfunction
 
-function! s:mcb_close_up_win()
+function! s:close_up_win()
   let mcb_up_win = getwinvar(winnr(), 'mcb_up_win', {})
   if !empty(mcb_up_win)
     call nvim_win_close(mcb_up_win.wid, 1)
@@ -120,7 +136,7 @@ function! s:mcb_close_up_win()
   endif
 endfunction
 
-function! s:mcb_close_down_win()
+function! s:close_down_win()
   let mcb_down_win = getwinvar(winnr(), 'mcb_down_win', {})
   if !empty(mcb_down_win)
     call nvim_win_close(mcb_down_win.wid, 1)
@@ -158,10 +174,10 @@ function! s:renderer() abort
     endfor
   endif
   if display_up == v:false
-    call s:mcb_close_up_win()
+    call s:close_up_win()
   endif
   if display_down == v:false
-    call s:mcb_close_down_win()
+    call s:close_down_win()
   endif
 
   call sign_unplace(s:sign_front_define.group, {'buffer': l:bufnr})
