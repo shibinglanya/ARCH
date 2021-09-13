@@ -1,3 +1,8 @@
+if get(g:, 'mcb_debug_disabled', 0)
+  let echo_file = '/tmp/mcb_debug.log'
+  execute debug#enter(expand('<sfile>'), expand('<slnum>') + 1, echo_file)
+endif
+
 let g:sign_detector#default_priority = 99
 let g:sign_detector#id = 999
 
@@ -82,10 +87,9 @@ function! s:render_up_win(beg)
   let numberwidth = &numberwidth - 1
   let numberwidth = max_lnum_len > numberwidth ? max_lnum_len : numberwidth
   let signs = s:get_signs()
-  call log#print(signs)
   let prefix = eval('printf("'. s:get_sign_text(a:beg, signs).'%'. numberwidth. 'd ", '. a:beg. ')')
   let string = prefix. getline(a:beg)
-  let mcb_up_win = getwinvar(winnr(), 'mcb_up_win', {})
+  let mcb_up_win = get(w:, 'mcb_up_win', {})
   if !empty(mcb_up_win)
     if mcb_up_win.string == string
       "由MCB_SignChanged触发Sign变更
@@ -115,7 +119,7 @@ endfunction
 
 function! s:render_down_win(end)
   let string = ''.a:end
-  let mcb_down_win = getwinvar(winnr(), 'mcb_down_win', {})
+  let mcb_down_win = get(w:, 'mcb_down_win', {})
   if !empty(mcb_down_win)
     if mcb_down_win.string == string
       return
@@ -125,29 +129,29 @@ function! s:render_down_win(end)
   endif
   "创建窗口
   let win = s:create_nvim_win(a:end, line('w$')-line('w0')-2, string)
-  call setwinvar(winnr(), 'mcb_down_win', {'wid': win, 'string': string})
+  let w:mcb_down_win = {'wid': win, 'string': string}
 endfunction
 
 function! s:close_up_win()
-  let mcb_up_win = getwinvar(winnr(), 'mcb_up_win', {})
+  let mcb_up_win = get(w:, 'mcb_up_win', {})
   if !empty(mcb_up_win)
     call nvim_win_close(mcb_up_win.wid, 1)
-    call setwinvar(winnr(), 'mcb_up_win', {})
+    let w:mcb_up_win = {}
   endif
 endfunction
 
 function! s:close_down_win()
-  let mcb_down_win = getwinvar(winnr(), 'mcb_down_win', {})
+  let mcb_down_win = get(w:, 'mcb_down_win', {})
   if !empty(mcb_down_win)
     call nvim_win_close(mcb_down_win.wid, 1)
-    call setwinvar(winnr(), 'mcb_down_win', {})
+    let w:mcb_down_win = {}
   endif
 endfunction
 
 
 function! s:renderer() abort
 	let l:bufnr = bufnr()
-  let [beg, end] = getwinvar(winnr(), 'mcb_curly_braces', [0, 0])
+  let [beg, end] = get(w:, 'mcb_curly_braces', [0, 0])
 
 	let l:signs = sign_getplaced(l:bufnr, {'group':'*'})[0].signs
 	let l:filter_self_signs = printf('\v^(%s|%s)\d+$', 
