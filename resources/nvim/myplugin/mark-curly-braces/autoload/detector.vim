@@ -1,6 +1,6 @@
 if get(g:, 'mcb_debug_disabled', 0)
   let echo_file = '/tmp/mcb_debug.log'
-  call debug#filter('detector.vim', 'MCB_DetectSign')
+  call debug#filter('detector.vim', 's:detect_sign')
   execute debug#enter(expand('<sfile>'), expand('<slnum>') + 1, echo_file)
 endif
 
@@ -19,7 +19,7 @@ function! s:update_timer.clone(winnr) abort
     return l:other_timer
 endfunction
 
-function! MCB_DetectSign(timer)
+function! s:detect_sign(timer)
   let signs1 = get(b:, 'mcb_signals', [])
   let signs2 = sign_getplaced(bufnr(), {'group':'*'})[0].signs
   if signs2 != signs1
@@ -29,12 +29,12 @@ function! MCB_DetectSign(timer)
 endfunction
 
 function! detector#init()
-  let s:timer = timer_start(100, 'MCB_DetectSign', { 'repeat': -1 })
+  let s:timer = timer_start(100, function('s:detect_sign'), { 'repeat': -1 })
   
   augroup MarkCurlyBracesDetector
     autocmd!
-    autocmd CursorMoved,CursorMovedI * 
-          \ call timer_start(60, s:update_timer.clone(winnr()).task, {'repeat': 1})
+    autocmd CursorMoved,CursorMovedI,WinEnter,WinLeave * 
+      \ call timer_start(60, s:update_timer.clone(winnr()).task, {'repeat': 1})
     autocmd BufEnter * call s:detector()
   augroup END
 endfunction

@@ -46,7 +46,8 @@ function! s:create_nvim_win(lnum, row, string)
   call nvim_buf_set_lines(buf, 0, -1, v:true, 
         \ ['╰'.repeat('─', info_len-4).'╮', info, '╭'.repeat('─', info_len-4).'╯'])
   let opts = {'relative': 'win', 'width': info_len-2, 'height': 3, 'col': 0,
-      \ 'row': a:row, 'anchor': 'NW', 'style': 'minimal', 'noautocmd': 0}
+      \ 'row': a:row, 'anchor': 'NW', 'style': 'minimal', 'noautocmd': 0, 
+      \ 'focusable': 0}
   let win = nvim_open_win(buf, 0, opts)
   call nvim_win_set_option(win, 'winhl', 'Normal:MyHighlight')
   return win
@@ -132,10 +133,31 @@ function! s:render_down_win(end)
   let w:mcb_down_win = {'wid': win, 'string': string}
 endfunction
 
+function! MCB_EnableWin()
+  let g:mcb_enable_up_win = 1
+  let g:mcb_enable_down_win = 1
+  call s:renderer()
+endfunction
+
+function! MCB_DisableWin()
+  let g:mcb_enable_up_win = 0
+  let g:mcb_enable_down_win = 0
+  call s:renderer()
+endfunction
+
+function! MCB_ToggleWin()
+  let g:mcb_enable_up_win = (get(g:, 'mcb_enable_up_win', 1) + 1) % 2
+  let g:mcb_enable_down_win = (get(g:, 'mcb_enable_down_win', 1) + 1) % 2
+  call s:renderer()
+  redraw! 
+endfunction
+
 function! s:close_up_win()
   let mcb_up_win = get(w:, 'mcb_up_win', {})
   if !empty(mcb_up_win)
-    call nvim_win_close(mcb_up_win.wid, 1)
+    if nvim_win_is_valid(mcb_up_win.wid)
+      call nvim_win_close(mcb_up_win.wid, 1)
+    endif
     let w:mcb_up_win = {}
   endif
 endfunction
@@ -143,7 +165,9 @@ endfunction
 function! s:close_down_win()
   let mcb_down_win = get(w:, 'mcb_down_win', {})
   if !empty(mcb_down_win)
-    call nvim_win_close(mcb_down_win.wid, 1)
+    if nvim_win_is_valid(mcb_down_win.wid)
+      call nvim_win_close(mcb_down_win.wid, 1)
+    endif
     let w:mcb_down_win = {}
   endif
 endfunction
@@ -164,11 +188,11 @@ function! s:renderer() abort
   let display_down = v:false
   if [beg, end] != [0, 0]
     let s:place_flag = 0
-    if line('w0') > beg
+    if line('w0') > beg && get(g:, 'mcb_enable_up_win', 1)
       call s:render_up_win(beg)
       let display_up = v:true
     endif
-    if line('w$') < end
+    if line('w$') < end && get(g:, 'mcb_enable_down_win', 1)
       call s:render_down_win(end)
       let display_down = v:true
     endif
@@ -202,7 +226,10 @@ endfunction
 function! renderer#init()
 	augroup MarkCurlyBracesRenderer
 		autocmd!
-    autocmd User MCB_CurlyBracesListChanged,MCB_SignChanged,MCB_CursorMoved call s:renderer()
+    autocmd User MCB_CurlyBracesListChanged,MCB_SignChanged,MCB_CursorMoved
+          \ call s:renderer()
+    autocmd WinLeave * call s:close_up_win()
+    autocmd WinLeave * call s:close_down_win()
 	augroup END
 endfunction
 
