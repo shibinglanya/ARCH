@@ -14,15 +14,15 @@ function! debug#enter(sfile, slnum, echo_file)
 endfunction
 
 function! s:add(pair, to_buf_list_name) "pair = [script_id, script_name]
-  let list = get(b:, a:to_buf_list_name, [])
+  let list = get(g:, a:to_buf_list_name, [])
   if index(list, a:pair) == -1
     call add(list, a:pair)
-    call setbufvar(bufnr(), a:to_buf_list_name, list)
+    execute 'let g:'.a:to_buf_list_name . ' = list'
   endif
 endfunction
 
 function! s:find(buf_list_name, pair)
-  for val in get(b:, a:buf_list_name, [])
+  for val in get(g:, a:buf_list_name, [])
     if val == a:pair
       return v:true
     endif
@@ -59,6 +59,10 @@ func! s:writefile(...) abort
   endif
 endf
 
+function! debug#print(...)
+	call s:writefile(printf("%s", join(a:000, '')))
+endfunction
+
 function! debug#func_begin(script_file_name, 
       \ fun_name, fun_lnum, fun_par, fun_arg) abort
   return { 
@@ -73,18 +77,18 @@ endfunction
 
 
 function! s:name2id(name)
-  let debug_name2id_list = get(b:, 'debug_name2id_list', [])
+  let debug_name2id_list = get(g:, 'debug_name2id_list', [])
   let id = index(debug_name2id_list, a:name)
   if id == -1
     call add(debug_name2id_list, a:name)
-    call setbufvar(bufnr(), 'debug_name2id_list', debug_name2id_list)
+    execute 'let g:debug_name2id_list = debug_name2id_list'
     return len(debug_name2id_list)
   endif
   return id+1
 endfunction
 
 function! s:id2name(id)
-  let debug_name2id_list = get(b:, 'debug_name2id_list', [])
+  let debug_name2id_list = get(g:, 'debug_name2id_list', [])
   if a:id-1 < len(debug_name2id_list)
     return debug_name2id_list[a:id-1]
   endif
@@ -100,7 +104,7 @@ function! debug#func_end(info, return) abort
   let fun_par          = a:info.fun_par
 
   let script_id = s:name2id(script_file_name)
-  if !empty(get(b:, 'debug_display_list', []))
+  if !empty(get(g:, 'debug_display_list', []))
     if !s:find('debug_display_list', [script_id, fun_lnum])
           \ && !s:find('debug_display_list', [script_id, fun_name])
       return

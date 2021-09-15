@@ -2,8 +2,8 @@
 
 func theme#basic_style2#init()
 	hi def IndentLineSign ctermfg=7
-		autocmd User SelfSignChanged call s:self_sign_changed(['╭─', '│ ', '╰>', '->'])
-		autocmd User OtherSignHidden call s:other_sign_hidden(['╭─', '│ ', '╰>', '->'])
+		autocmd User SelfSignChanged call s:self_sign_changed([' ╭', ' │', ' ╰', '->'])
+		autocmd User OtherSignHidden call s:other_sign_hidden([' ╭', ' │', ' ╰', '->'])
 endf
 
 function! s:self_sign_changed(token)
