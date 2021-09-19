@@ -1,106 +1,251 @@
 if get(g:, 'mcb_debug_disabled', 0)
   let echo_file = '/tmp/mcb_debug.log'
-  "call debug#display('renderer.vim', 's:close_xxx_win')
+  "call debug#display('renderer.vim', 's:rowpos2winpos')
+  call debug#display('renderer.vim', 's:update_sign_of_win_above')
   execute debug#enter(expand('<sfile>'), expand('<slnum>') + 1, echo_file)
 endif
 
-"let g:sign_detector#default_priority = 99
-"let g:sign_detector#id = 999
-"
-"let s:sign_back_define  = {
-"			\ 'id': g:sign_detector#id, 
-"			\ 'name': 'SignDetectorBack',
-"			\ 'group': 'SignDetectorBackGroup',
-"			\ 'priority': g:sign_detector#default_priority + 1
-"			\}
-"let s:sign_front_define = {
-"			\ 'id': g:sign_detector#id, 
-"			\ 'name': 'SignDetectorFront',
-"			\ 'group': 'SignDetectorFrontGroup',
-"			\ 'priority': g:sign_detector#default_priority + 2
-"			\}
-"
-"function! renderer#place(text, texthl)
-"	if exists('s:place_flag') && s:place_flag == 0
-"		let id       = s:sign_back_define.id
-"		let name     = s:sign_back_define.name
-"		let group    = s:sign_back_define.group
-"		let priority = s:sign_back_define.priority
-"	elseif exists('s:place_flag') && s:place_flag == 1
-"		let id       = s:sign_front_define.id
-"		let name     = s:sign_front_define.name
-"		let group    = s:sign_front_define.group
-"		let priority = s:sign_front_define.priority
-"	endif
-"	call sign_define(name. b:sd_line, {'text': a:text, 'texthl': a:texthl})
-"
-"	call sign_place(id, group, name. b:sd_line, bufnr(), 
-"				\ {'lnum': b:sd_line, 'priority': priority})
-"endfunction
-
-function! s:create_nvim_win(x, y, lines, priority)
-  let bufnr = nvim_create_buf(v:false, v:true)
-  call nvim_buf_set_lines(bufnr, 0, -1, v:true, a:lines)
-
-  let height = len(a:lines)
-  let width  = max(map(copy(a:lines), 'strdisplaywidth(v:val)'))
-  let width  = width - 10 > 0 ? width : width 
-  let opts = {'relative': 'win', 'width': width, 'height': height,
-      \ 'row': a:y, 'col': a:x, 'zindex': a:priority,
+function! s:create_win(win_x, win_y, width, height, bufnr, priority)
+  let opts = {'relative': 'win', 'width': a:width, 'height': a:height,
+      \ 'row': a:win_y, 'col': a:win_x, 'zindex': a:priority,
       \ 'anchor': 'NW', 'style': 'minimal', 'noautocmd': 0, 'focusable': 0}
-  let win = nvim_open_win(bufnr, 0, opts)
-
-  call nvim_win_set_option(win, 'winhl', 'Normal:MyHighlight')
-  return win
+  let wid = nvim_open_win(a:bufnr, 0, opts)
+  call nvim_win_set_option(wid, 'winhl', 'Normal:MyHighlight')
+  return wid
 endfunction
 
-function! s:create_win(x, y, lines, priority)
-  let win =  s:create_nvim_win(a:x, a:y, a:lines, a:priority)
-  return win
+function! s:create_buf()
+  let bufnr = nvim_create_buf(v:false, v:true)
+  call nvim_buf_set_lines(bufnr, 0, -1, v:true, [])
+  return bufnr
 endfunction
 
-function! s:render_win_above(beg)
-  let numberwidth = max([&numberwidth - 1, len(line('$'))])
-  let signs = s:get_signs()
-  let prefix = eval('printf("'. s:get_sign_text(a:beg, signs).'%'. numberwidth. 'd ", '. a:beg. ')')
-  let string = prefix. getline(a:beg)
-  let mcb_win_above = get(w:, 'mcb_win_above', {})
-  if !empty(mcb_win_above)
-    if mcb_win_above.string == string
-          \ && mcb_win_above.pos == line('w0')
-      "由detect_sign触发Sign变更
-      call s:update_sign(mcb_win_above.wid, signs, a:beg, len(prefix))
-      return
+function! s:is_valid_win(wid)
+  if a:wid != -1 && nvim_win_is_valid(a:wid)
+    return v:true
+  endif
+  return v:false
+endfunction
+
+function! s:close_win(wid)
+  if s:is_valid_win(a:wid)
+    call nvim_win_close(a:wid, 1)
+  endif
+endfunction
+
+function! s:close_buf(bufnr)
+endfunction
+
+function! s:set_width_of_win(wid, width)
+  call nvim_win_set_width(a:wid, a:width)
+endfunction
+
+function! s:set_height_of_win(wid, height)
+  call nvim_win_set_height(a:wid, a:height)
+endfunction
+
+function! s:get_position_of_win(wid)
+  return nvim_win_get_position(a:wid)
+endfunction
+
+function! s:repeat_list(char, count)
+  return split(repeat(a:char, a:count), '\zs')
+endfunction
+
+function! s:lnum2height_of_screen(lnum, col)
+  if &wrap == v:true
+    return screenpos(winnr(), a:lnum, a:col).row
+  endif
+  return a:lnum
+endfunction
+
+function! s:get_numberwidth()
+  return &number ? max([&numberwidth, strdisplaywidth(line('$'))+1]) : 0
+endfunction
+
+function! s:get_wrap_line(lnum)
+  if &wrap == v:false | return [getline(a:lnum)] | endif
+  let result = ['']
+  let win_width = winwidth(winnr()) - s:get_numberwidth() - 2
+  let display_width = 0
+  for char in split(getline(a:lnum), '\zs')
+    let display_width = display_width + strdisplaywidth(char)
+    if display_width >= win_width
+      let result[-1] = result[-1].char
+      call add(result, '')
+      let display_width = 0
+      continue
+    endif
+    let result[-1] = result[-1].char
+  endfor
+  return result
+endfunction
+
+function! s:lnum2height_of_line(lnum, col)
+  let len = 0
+  let height = 1
+  for line in s:get_wrap_line(a:lnum)
+    let len = len + len(line)
+    if a:col <= len
+      return height
+    endif
+    let height = height + 1
+  endfor
+endfunction
+
+function! s:get_line_of_screen(lnum, height)
+  if a:lnum == line('w$')+1
+    let height = s:lnum2height_of_screen(a:lnum-1, 1)
+          \ + s:lnum2height_of_line(a:lnum-1, len(getline(a:lnum-1)))
+  else
+    let height = s:lnum2height_of_screen(a:lnum, 1)
+  endif
+  return s:get_wrap_line(a:lnum)[a:height - height]
+endfunction
+
+function! s:get_line_of_screen_by_col(lnum, col)
+  return s:get_wrap_line(a:lnum)[s:lnum2height_of_line(a:lnum, a:col) - 1]
+endfunction
+
+function! renderer#test(lnum, height)
+  return s:get_line_of_screen(a:lnum, a:height)
+endfunction
+
+function! s:mcb_create_win(mcb_win, win_x, win_y, width, height, priority)
+  if s:is_valid_win(a:mcb_win.wid)
+    call s:close_win(a:mcb_win.wid)
+  endif
+  let a:mcb_win.wid = s:create_win(a:win_x, a:win_y, a:width, a:height, 
+        \ a:mcb_win.bufnr, a:priority)
+  let a:mcb_win.size = [a:width, a:height]
+endfunction
+
+function! s:mcb_close_win(mcb_win)
+  call s:close_win(a:mcb_win.wid)
+  let a:mcb_win.wid        = -1
+endfunction
+
+function! s:rowpos2winpos(beg, end)
+  let [beg_lnum, beg_col] = a:beg
+  let [end_lnum, end_col] = a:end
+  let screen_1 = s:lnum2height_of_screen(line('w0'), 1)
+  if beg_lnum >= line('w0')
+    let screen_beg = [v:true, s:lnum2height_of_screen(beg_lnum, beg_col), beg_lnum]
+  else
+    let screen_beg = 
+          \ [v:false, s:lnum2height_of_screen(line('w0'), 1), line('w0')]
+  endif
+  if end_lnum <= line('w$')
+    let screen_end = [v:true, s:lnum2height_of_screen(end_lnum, end_col), end_lnum]
+  else
+    let height = win_screenpos(winnr())[0] + winheight(winnr()) - 1
+    let screen_end = s:lnum2height_of_screen(line('w$'), len(getline('w$')))
+    if screen_end != height "有未填充的行
+      if end_lnum == line('w$')+1
+        let screen_end = 
+              \ screen_end + s:lnum2height_of_line(line('w$')+1, end_col)
+        if screen_end <= height
+          let screen_end = [v:true, screen_end, end_lnum]
+        else
+          let screen_end = [v:false, height, end_lnum]
+        endif
+      else
+        let screen_end = [v:false, height, line('w$')+1]
+      endif
     else
-      call nvim_win_close(mcb_win_above.wid, 1)
+      let screen_end = [v:false, screen_end, line('w$')]
     endif
   endif
+  return [screen_beg, screen_end]
+endfunction
 
+function! s:render_win_in_middle(screen_beg, screen_end)
+  let mcb_win = w:mcb_renderer.win_in_middle
+  call deletebufline(mcb_win.bufnr, 1, '$')
+  let [width, height] = [1, winheight(winnr())]
+  call s:mcb_create_win(mcb_win, 1, 0, width, height, 1)
+  let screen_1   = s:lnum2height_of_screen(line('w0'), 1)
+  let lines = s:repeat_list(' ', a:screen_beg - screen_1)
+  let lines = lines + s:repeat_list('│', a:screen_end - a:screen_beg + 1)
+  call setbufline(mcb_win.bufnr, 1, lines)
+endfunction
+
+function! s:render_win_above2(lnum, screen_beg)
+  let mcb_win = w:mcb_renderer.win_above
+  let string_of_screen = s:get_line_of_screen(a:lnum, a:screen_beg)
+  let space_len = strdisplaywidth(matchstr(string_of_screen, '\v^\s*'))
+  let numberwidth = s:get_numberwidth() - 1
+  let string = '╭'.repeat('─', numberwidth+space_len)
+  let [width, height] = [strdisplaywidth(string), 1]
+  let screen_1 = s:lnum2height_of_screen(line('w0'), 1)
+  call s:mcb_create_win(mcb_win, 1, a:screen_beg - screen_1, width, height, 2)
+  call deletebufline(mcb_win.bufnr, 1, '$')
+  call setbufline(mcb_win.bufnr, 1, string)
+endfunction
+
+function! s:render_win_below2(lnum, screen_end)
+  let mcb_win = w:mcb_renderer.win_below
+  let string_of_screen = s:get_line_of_screen(a:lnum, a:screen_end)
+  let space_len = strdisplaywidth(matchstr(string_of_screen, '\v^\s*'))
+  let numberwidth = s:get_numberwidth() - 1
+  let string = '╰'.repeat('─', numberwidth+space_len-1)
+        \ .((space_len+numberwidth+1)!=0?'>':'')
+  let [width, height] = [strdisplaywidth(string), 1]
+  let screen_1 = s:lnum2height_of_screen(line('w0'), 1)
+  call s:mcb_create_win(mcb_win, 1, a:screen_end - screen_1, width, height, 2)
+  call deletebufline(mcb_win.bufnr, 1, '$')
+  call setbufline(mcb_win.bufnr, 1, string)
+endfunction
+
+function! s:render_win_above(lnum, col)
+  let numberwidth = s:get_numberwidth() - 1
+  let signs = s:get_signs()
+  let string1 = s:get_sign_text(a:lnum, signs)
+  let string1 = string1. eval('printf("%'. numberwidth. 'd ", '. a:lnum. ')')
+  let string2 = s:get_line_of_screen_by_col(a:lnum, a:col)
+  let string = string1. string2
 
   let lines = ['', '']
   let lines[0] = string.' ─╮'
   let lines[1] = ' ╭'.repeat('─', strdisplaywidth(lines[0])-3).'╯'
 
-  "创建窗口
-  let win = s:create_win(0, 0, lines, 2)
-  call setwinvar(winnr(), 'mcb_win_above', {'wid': win, 'string': string, 'pos': line('w0')})
+  let mcb_win = w:mcb_renderer.win_above
+  call s:mcb_create_win(mcb_win, 0, 0, strdisplaywidth(lines[1]), 2, 2)
+  call deletebufline(mcb_win.bufnr, 1, '$')
+  call setbufline(mcb_win.bufnr, 1, lines)
+
+  let heightofline = s:lnum2height_of_line(a:lnum, a:col)
+  let offset = len(join(s:get_wrap_line(a:lnum)[: heightofline - 1], ''))
+  let offset = offset - len(string2)
+
   "高亮
-  for idx in range(len(getline(a:beg)))
-    let col = idx + 1
-    let name = synIDattr(synID(a:beg, col, 0), 'name')
+  for idx in range(len(string2))
+    let col = idx + offset + 1
+    let name = synIDattr(synID(a:lnum, col, 0), 'name')
     if empty(name) | continue | endif
-    call win_execute(win, 
-          \ 'call matchaddpos("'. name.'", [[1, '. (col+len(prefix)). ']])')
+    call win_execute(mcb_win.wid, 
+          \ 'call matchaddpos("'. name.'", [[1, '. (idx+len(string1)+1). ']])', 'silent!')
   endfor
 
-  call s:update_sign(win, signs, a:beg, len(prefix))
+  call s:update_sign(mcb_win.wid, signs, a:lnum, len(string1))
 endfunction
 
+function! s:render_win_below(lnum, screen_end)
+  let numberwidth = s:get_numberwidth() - 1
+  let lines = ['', '', '']
+  let lines[1] = eval('printf(" %'. numberwidth. 'd│", '. a:lnum. ')')
+  let lines[0] = '╰'.repeat('─', strdisplaywidth(lines[1])-2).'╮'
+  let lines[2] = '╭'.repeat('─', strdisplaywidth(lines[1])-2).'╯'
+
+  let mcb_win = w:mcb_renderer.win_below
+  let screen_1 = s:lnum2height_of_screen(line('w0'), 1)
+  let win = s:mcb_create_win(mcb_win, 1, a:screen_end-screen_1-3, len(lines[1]), 3, 2)
+  call deletebufline(mcb_win.bufnr, 1, '$')
+  call setbufline(mcb_win.bufnr, 1, lines)
+endfunction
 
 function! s:get_signs()
   let signs = sign_getplaced(bufnr(), {'group':'*'})[0].signs
-  "过滤自身的sign
-  "let signs =  filter(signs, {->v:val.id != g:sign_detector#id})
   let signs = s:filter_low_priority(signs)
   return signs
 endfunction
@@ -110,13 +255,14 @@ function! s:update_sign(win, signs, lnum, len)
     if sign.lnum == a:lnum
       let sign_define = sign_getdefined(sign.name)[0]
       call win_execute(a:win, 
-        \ 'call matchaddpos("'. sign_define.texthl .'", [[1, 1, '. a:len. ']])')
+        \ 'call matchaddpos("'. sign_define.texthl .'", [[1, 1, '. a:len. ']])', 'silent!')
       return
     endif
   endfor
   call win_execute(a:win, 
-    \ 'call matchaddpos("SignColumn", [[1, 1, '. a:len. ']])')
+    \ 'call matchaddpos("SignColumn", [[1, 1, '. a:len. ']])', 'silent!')
 endfunction
+
 
 function! s:get_sign_text(lnum, signs)
   for sign in a:signs
@@ -127,208 +273,113 @@ function! s:get_sign_text(lnum, signs)
   return '  '
 endfunction
 
-
-function! s:render_win_in_middle(beg, end)
-  let mcb_win_in_middle = get(w:, 'mcb_win_in_middle', {})
-  if !empty(mcb_win_in_middle)
-    if mcb_win_in_middle.beg == a:beg-line('w0') && a:end-line('w0') == mcb_win_in_middle.end
-      return
-    else
-      call nvim_win_close(mcb_win_in_middle.wid, 1)
-    endif
-  endif
-
-  let lines = split('│'. repeat(',│', min([a:end, line('w$')])-a:beg), ',')
-  "创建窗口
-  let win = s:create_win(1, a:beg-line('w0'), lines, 1)
-  let w:mcb_win_in_middle = {'wid': win, 'beg': a:beg-line('w0'), 'end': a:end-line('w0')}
-endfunction
-
-function! s:render_win_above2(beg)
-  let mcb_win_above2 = get(w:, 'mcb_win_above2', {})
-  if !empty(mcb_win_above2)
-    if mcb_win_above2.pos == a:beg-line('w0')
-          \ && mcb_win_above2.string == getline(a:beg)
-          \ && mcb_win_above2.height == line('w$')
-      return
-    else
-      call nvim_win_close(mcb_win_above2.wid, 1)
-    endif
-  endif
-
-  let space_len = 0
-  for char in split(getline(a:beg), '\zs')
-    if char == ' '
-      let space_len = space_len + 1
-    elseif char == "\t"
-      let space_len = space_len + &tabstop
-    else
-      break
-    endif
-  endfor
-
-  let numberwidth = max([&numberwidth - 1, len(line('$'))])
-  let lines = ['╭'.repeat('─', numberwidth+space_len)]
-  "创建窗口
-  let win = s:create_win(1, a:beg-line('w0'), lines, 2)
-  let w:mcb_win_above2 = {'wid': win, 'pos': a:beg-line('w0'), 'height': line('w$'), 'string': getline(a:beg)}
-endfunction
-
-function! s:render_win_below2(end)
-  let mcb_win_below2 = get(w:, 'mcb_win_below2', {})
-  if !empty(mcb_win_below2)
-    if mcb_win_below2.pos == a:end-line('w0')
-          \ && mcb_win_below2.string == getline(a:end)
-      return
-    else
-      call nvim_win_close(mcb_win_below2.wid, 1)
-    endif
-  endif
-
-  let space_len = 0
-  for char in split(getline(a:end), '\zs')
-    if char == ' '
-      let space_len = space_len + 1
-    elseif char == "\t"
-      let space_len = space_len + &tabstop
-    else
-      break
-    endif
-  endfor
-
-  let numberwidth = max([&numberwidth - 1, len(line('$'))])
-  let lines = ['╰'.repeat('─', numberwidth+space_len-1).'>']
-  "创建窗口
-  let win = s:create_win(1, a:end-line('w0'), lines, 2)
-  let w:mcb_win_below2 = {'wid': win, 'pos': a:end-line('w0'), 'string': getline(a:end)}
-endfunction
-
-function! s:render_win_below(end)
-  let string = ''.a:end
-  let pos = line('w$')-line('w0')-2
-  let mcb_win_below = get(w:, 'mcb_win_below', {})
-  if !empty(mcb_win_below)
-    if mcb_win_below.string == string && pos == mcb_win_below.pos
-      return
-    else
-      call nvim_win_close(mcb_win_below.wid, 1)
-    endif
-  endif
-
-  let numberwidth = max([&numberwidth - 1, len(line('$'))])
-  let lines = ['', '', '']
-  let lines[1] = eval('printf(" %'. numberwidth. 'd│", '. a:end. ')')
-  let lines[0] = '╰'.repeat('─', strdisplaywidth(lines[1])-2).'╮'
-  let lines[2] = '╭'.repeat('─', strdisplaywidth(lines[1])-2).'╯'
-
-  "创建窗口
-  let win = s:create_win(1, pos-1, lines, 2)
-  let w:mcb_win_below = {'wid': win, 'string': string, 'pos': pos}
-endfunction
-
 function! MCB_ToggleWin()
   "let g:mcb_enable_win_above = (get(g:, 'mcb_enable_win_above', 1) + 1) % 2
   "let g:mcb_enable_win_below = (get(g:, 'mcb_enable_win_below', 1) + 1) % 2
   "call s:renderer()
 endfunction
 
-function! s:close_xxx_win(mcb_xxx_win)
+let s:update_timer = {  }
+function! s:update_timer.clone(winnr, beg, end) abort
+    call setwinvar(a:winnr, 'mcb_renderer_update_id', 
+                \ getwinvar(a:winnr, 'mcb_renderer_update_id', -1) + 1)
+    let l:other_timer       = copy(self)
+    let l:other_timer.id    = getwinvar(a:winnr, 'mcb_renderer_update_id', -1)
+    let l:other_timer.winnr = a:winnr
+    let l:other_timer.mcb_beg = a:beg
+    let l:other_timer.mcb_end = a:end
+    function! l:other_timer.task(timer) abort
+        if self.id == getwinvar(self.winnr, 'mcb_renderer_update_id', -1)
+          call win_execute(win_getid(self.winnr), 
+                \'call s:renderer_task(self.mcb_beg, self.mcb_end)', 'silent!')
+          "call win_gotoid(win_getid(winnr()))
+        endif
+    endfunction
+    return l:other_timer
+endfunction
+
+function! s:renderer_task(beg, end)
+  if [a:beg[0], a:end[0]] != [0, 0] && a:beg[0] != a:end[0]
+    let [beg_lnum, beg_col] = a:beg
+    let [end_lnum, end_col] = a:end
+    let [screen_beg, screen_end] = s:rowpos2winpos(a:beg, a:end)
+    if screen_beg[0] == v:true
+      call s:render_win_above2(screen_beg[2], screen_beg[1])
+    else
+      call s:render_win_above(beg_lnum, beg_col)
+    endif
+    if screen_end[0] == v:true
+      call s:render_win_below2(screen_end[2], screen_end[1])
+    else
+      call s:render_win_below(end_lnum, screen_end[1])
+    endif
+    call s:render_win_in_middle(screen_beg[1], screen_end[1])
+  else
+    call s:mcb_close_win_all()
+  endif
+endfunction
+
+function! s:mcb_close_win_all()
   let winnr = winnr()
   let closed_winnr = win_id2win(expand('<afile>'))
   if closed_winnr != 0 && closed_winnr != winnr
     return
-  endi
-  let mcb_xxx_win = get(w:, a:mcb_xxx_win, {})
-  if !empty(mcb_xxx_win)
-    if nvim_win_is_valid(mcb_xxx_win.wid)
-      call nvim_win_close(mcb_xxx_win.wid, 1)
-    endif
-    call setwinvar(winnr, a:mcb_xxx_win, {})
   endif
+  call s:mcb_close_win(w:mcb_renderer.win_in_middle)
+  call s:mcb_close_win(w:mcb_renderer.win_above)
+  call s:mcb_close_win(w:mcb_renderer.win_below)
 endfunction
 
-function! s:renderer_aux(winnr, beg, end)
-	let l:bufnr = bufnr()
-  let [beg, end] = [a:beg, a:end]
-
-	"let l:signs = sign_getplaced(l:bufnr, {'group':'*'})[0].signs
-	"let l:filter_self_signs = printf('\v^(%s|%s)\d+$', 
-	"			\ s:sign_back_define.name, s:sign_front_define.name)
-	"let l:signs = filter(signs, {->v:val.name !~ l:filter_self_signs})
-	"let l:signs = filter(l:signs, {->v:val.lnum >= beg && v:val.lnum <= end})
-  "let b:sd_range = [beg, end]
-  "call sign_unplace(s:sign_back_define.group, {'buffer': l:bufnr})
-  let display_up = v:false
-  let display_up2 = v:false
-  let display_down = v:false
-  let display_down2 = v:false
-  if [beg, end] != [0, 0] && beg != end
-    let s:place_flag = 0
-    if line('w0') > beg
-      call s:render_win_above(beg)
-      let display_up = v:true
-    else
-      call s:render_win_above2(beg)
-      let display_up2 = v:true
-    endif
-    if line('w$') < end
-      call s:render_win_below(end)
-      let display_down = v:true
-    else
-      call s:render_win_below2(end)
-      let display_down2 = v:true
-    endif
-    call s:render_win_in_middle(max([beg, line('w0')]), min([end, line('w$')]))
-
-    "for line in range(max([beg, line('w0')-50]), min([end, line('w$')+50]))
-    "  let b:sd_line = line
-    "  doautocmd User SelfSignChanged
-    "endfor
-  else
-    call s:close_xxx_win('mcb_win_in_middle')
-  endif
-  if display_up == v:false
-    call s:close_xxx_win('mcb_win_above')
-  endif
-  if display_up2 == v:false
-    call s:close_xxx_win('mcb_win_above2')
-  endif
-
-  if display_down2 == v:false
-    call s:close_xxx_win('mcb_win_below2')
-  endif
-  if display_down == v:false
-    call s:close_xxx_win('mcb_win_below')
-  endif
-
-  "call sign_unplace(s:sign_front_define.group, {'buffer': l:bufnr})
-  "let s:place_flag = 1
-  "for sign_hidden in s:filter_low_priority(l:signs)
-  "  let b:sd_range = [beg, end]
-  "  let b:sd_sign = sign_hidden
-  "  let b:sd_sign_defined = sign_getdefined(sign_hidden.name)[0]
-  "  let b:sd_line = sign_hidden.lnum
-  "  doautocmd User OtherSignHidden
-  "endfor
+function! s:run_timer_task(winnr, beg, end)
+  "call timer_start(500, 
+  "      \ s:update_timer.clone(a:winnr, a:beg, a:end).task, {'repeat': 1})
+  call win_execute(win_getid(a:winnr), 
+        \'call s:renderer_task(a:beg, a:end)', 'silent!')
 endfunction
 
 function! s:renderer()
-  let [winnr, beg, end] = get(g:, 'mcb_curly_braces', [-1, 0, 0])
-  if winnr == -1 | return | endif
-  let winid = filter(getwininfo(), 'v:val.winnr == winnr')[0].winid
-  call win_execute(winid, 'call s:renderer_aux(winnr, beg, end)')
+  let winnr = get(g:, 'mcb_curly_braces_winnr', 0)
+  let mcb_curly_braces = getwinvar(winnr, 'mcb_curly_braces', {})
+  let beg = mcb_curly_braces.beg
+  let end = mcb_curly_braces.end
+  call win_execute(win_getid(winnr), 'call s:mcb_close_win_all()', 'silent!')
+  if [beg[0], end[0]] != [0, 0] && beg[0] != end[0]
+    call s:run_timer_task(winnr, beg, end)
+  endif
+endfunction
+
+function! s:init()
+  let w:mcb_renderer = {'win_above':{}, 'win_below':{}, 'win_in_middle':{}}
+  let w:mcb_renderer.win_above.bufnr      = s:create_buf()
+  let w:mcb_renderer.win_above.wid        = -1
+
+  let w:mcb_renderer.win_below.bufnr      = s:create_buf()
+  let w:mcb_renderer.win_below.wid        = -1
+
+  let w:mcb_renderer.win_in_middle.bufnr      = s:create_buf()
+  let w:mcb_renderer.win_in_middle.wid        = -1
+endfunction
+
+function! s:update_sign_of_win_above()
+  let mcb_win = getwinvar(b:mcb_signs_winid, 'mcb_renderer', {})
+  if empty(mcb_win) | return | endif
+  let mcb_win = mcb_win.win_above
+  if s:is_valid_win(mcb_win.wid) 
+        \ && !s:rowpos2winpos(b:mcb_signs_lnum_and_col, [1,1])[0][0] "不要忘记优化这里
+    let [beg_lnum, beg_col] = b:mcb_signs_lnum_and_col
+    call win_execute(b:mcb_signs_winid, 
+          \ 'call s:render_win_above(beg_lnum, beg_col)')
+  endif
 endfunction
 
 function! renderer#init()
 	augroup MarkCurlyBracesRenderer
 		autocmd!
-    autocmd User MCB_CurlyBracesListChanged,MCB_SignChanged,MCB_CursorMoved
+    autocmd User MCB_CurlyBracesListChanged,MCB_CursorMoved
           \ call s:renderer()
-    autocmd WinClosed * call s:close_xxx_win('mcb_win_above')
-    autocmd WinClosed * call s:close_xxx_win('mcb_win_above2')
-    autocmd WinClosed * call s:close_xxx_win('mcb_win_below')
-    autocmd WinClosed * call s:close_xxx_win('mcb_win_below2')
-    autocmd WinClosed * call s:close_xxx_win('mcb_win_in_middle')
+    autocmd User MCB_SignChanged call s:update_sign_of_win_above()
+    autocmd WinClosed * call s:mcb_close_win_all()
+    autocmd WinNew,VimEnter  * call s:init()
 	augroup END
 endfunction
 
