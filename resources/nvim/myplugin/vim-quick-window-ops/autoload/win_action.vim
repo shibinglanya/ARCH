@@ -2,6 +2,7 @@ function! s:win_del(winnr, condition) abort
     for l:wininfo in filter(getwininfo(), 'v:val.winnr != a:winnr')
         let l:xy = win_screenpos(l:wininfo.winnr)
         if call(a:condition, [l:xy[0], l:xy[1]])
+              \ && buflisted(l:wininfo.bufnr)
             silent! execute l:wininfo.winnr .'close'
             return v:true
         endif
