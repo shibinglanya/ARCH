@@ -4,4 +4,4 @@ call detector#init()
 call renderer#init()
 
 
-nnoremap <plug>(mcb-toggle-win) :call MCB_ToggleWin()<CR>
+nnoremap <plug>(mcb-toggle) :call renderer#toggle()<CR>

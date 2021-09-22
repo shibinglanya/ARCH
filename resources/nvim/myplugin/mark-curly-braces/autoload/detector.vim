@@ -25,19 +25,20 @@ function! s:detect_sign(timer)
   if signs2 != signs1
     for winid in win_findbuf(bufnr()) 
       let winnr = win_id2win(winid)
-      let [beg_lnum, beg_col] = s:searchpair(winnr, '{', '', '}', 'b')
-      let b:mcb_signs_lnum_and_col = [beg_lnum, beg_col]
-      let b:mcb_signs_winid = winid
-      let b:mcb_signs = signs2
+      let [lnum, col] = s:searchpair(winnr, '{', '', '}', 'b')
+      let b:mcb_detect_sign_val = {'winid':winid,'lnum':lnum,'col':col}
       doautocmd User MCB_SignChanged
     endfor
+    let b:mcb_signs = signs2
   endif
 endfunction
 
 function! s:detect_win_size_change(timer)
   for wininfo in getwininfo()
     let winnr = wininfo.winnr
-    if empty(bufname(wininfo.bufnr)) | return | endif
+    if !buflisted(wininfo.bufnr)
+      return
+    endif
     let size1 = getwinvar(winnr, 'mcb_win_size', [])
     let size2 = [win_screenpos(winnr), winwidth(winnr), winheight(winnr)]
     if size1 != size2
@@ -45,19 +46,6 @@ function! s:detect_win_size_change(timer)
       call s:detector(winnr, v:true)
     endif
   endfor
-endfunction
-
-function! detector#init()
-  let s:timer1 = timer_start(100, function('s:detect_sign'), { 'repeat': -1 })
-  let s:timer2 = timer_start(100, function('s:detect_win_size_change'), 
-        \ { 'repeat': -1 })
-  
-  augroup MarkCurlyBracesDetector
-    autocmd!
-    autocmd CursorMoved,CursorHoldI * 
-      \ call timer_start(60, s:update_timer.clone(winnr()).task, {'repeat': 1})
-    "autocmd BufEnter * call s:detector(winnr())
-  augroup END
 endfunction
 
 
@@ -118,3 +106,15 @@ function! s:detector(winnr, mandatory)
   return
 endfunction
 
+function! detector#init()
+  let s:timer1 = timer_start(100, function('s:detect_sign'), { 'repeat': -1 })
+  let s:timer2 = timer_start(100, function('s:detect_win_size_change'), 
+        \ { 'repeat': -1 })
+  
+  augroup MarkCurlyBracesDetector
+    autocmd!
+    autocmd CursorMoved,CursorHoldI * 
+      \ call timer_start(60, s:update_timer.clone(winnr()).task, {'repeat': 1})
+    "autocmd BufEnter * call s:detector(winnr())
+  augroup END
+endfunction
