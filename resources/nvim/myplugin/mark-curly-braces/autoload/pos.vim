@@ -62,7 +62,7 @@ function! s:buf_pos2height_from_screen(lnum, col)
   return screenpos(winnr,  min_lnum_in_win, 1).row + a:lnum - min_lnum_in_win
 endfunction
 
-function! pos#get_screen_line_by_height_from_win(lnum, height)
+function! pos#get_screen_line_by_height_from_win(lnum, height) abort
   if a:lnum == line('w$')+1 "说明lnum行是跨行文本，且一部分没有被显示
     let height = 
           \ s:buf_pos2height_from_screen(a:lnum-1, len(getline(a:lnum-1))) + 1
@@ -72,7 +72,10 @@ function! pos#get_screen_line_by_height_from_win(lnum, height)
   "将距离窗口的高度转换为距离屏幕的高度
   let height_from_screen = 
         \ a:height + s:buf_pos2height_from_screen(line('w0'), 1)
-  return s:get_wrap_line(a:lnum)[height_from_screen - height]
+  let tmp = s:get_wrap_line(a:lnum)
+  if height_from_screen - height < len(tmp)
+    return tmp[height_from_screen - height]
+  endif
 endfunction
 
 function! pos#get_screen_line_by_bufcol(lnum, col)
