@@ -187,12 +187,12 @@ function! s:get_sign_text(lnum, signs)
   return '  '
 endfunction
 
-let s:mcb_closed = 0
 function! renderer#toggle()
-  let s:mcb_closed = (s:mcb_closed+1)%2
-  if s:mcb_closed == 1
+  let w:mcb_closed = (get(w:, 'mcb_closed', 0)+1)%2
+  if w:mcb_closed == 1
     call s:mcb_close_win_all()
   else
+    let g:mcb_curly_braces_winnr = winnr()
     call s:renderer(0)
   endif
 endfunction
@@ -246,11 +246,10 @@ function! s:run_timer_task(winnr, beg, end, delay)
 endfunction
 
 function! s:renderer(delay)
-  if s:mcb_closed == 1
+  let winnr = get(g:, 'mcb_curly_braces_winnr', 0)
+  if getwinvar(winnr, 'mcb_closed', 0) == 1
     return
   endif
-
-  let winnr = get(g:, 'mcb_curly_braces_winnr', 0)
   let mcb_curly_braces = getwinvar(winnr, 'mcb_curly_braces', {})
   let beg = mcb_curly_braces.beg
   let end = mcb_curly_braces.end

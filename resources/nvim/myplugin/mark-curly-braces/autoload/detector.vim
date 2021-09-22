@@ -13,7 +13,9 @@ function! s:update_timer.clone(winnr) abort
     let l:other_timer.winnr = a:winnr
     function! l:other_timer.task(timer) abort
         if self.id == getwinvar(self.winnr, 'mcb_detector_update_id', -1)
-          call s:detector(winnr(), v:false)
+          let winid = win_getid(self.winnr)
+          call win_execute(winid, 'call s:detector(self.winnr, v:false)')
+          "call s:detector(winnr(), v:false)
         endif
     endfunction
     return l:other_timer
@@ -106,6 +108,13 @@ function! s:detector(winnr, mandatory)
   return
 endfunction
 
+function! s:detector_task()
+  for winid in win_findbuf(bufnr()) 
+    let winnr = win_id2win(winid)
+    call timer_start(60, s:update_timer.clone(winnr).task, {'repeat': 1})
+  endfor
+endfunction
+
 function! detector#init()
   let s:timer1 = timer_start(100, function('s:detect_sign'), { 'repeat': -1 })
   let s:timer2 = timer_start(100, function('s:detect_win_size_change'), 
@@ -113,8 +122,7 @@ function! detector#init()
   
   augroup MarkCurlyBracesDetector
     autocmd!
-    autocmd CursorMoved,CursorHoldI * 
-      \ call timer_start(60, s:update_timer.clone(winnr()).task, {'repeat': 1})
+    autocmd CursorMoved,CursorHoldI * call s:detector_task()
     "autocmd BufEnter * call s:detector(winnr())
   augroup END
 endfunction
