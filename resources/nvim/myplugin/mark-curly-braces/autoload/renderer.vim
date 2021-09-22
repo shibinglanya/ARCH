@@ -132,6 +132,21 @@ function! s:render_win_above(lnum, col)
   call s:update_sign(mcb_win.wid, signs, a:lnum, len(part1))
 endfunction
 
+function! s:update_sign_of_win_above()
+  let winid = b:mcb_detect_sign_val.winid
+  let mcb_renderer = getwinvar(winid, 'mcb_renderer', {})
+  if empty(mcb_renderer)
+    return
+  endif
+  let [lnum, col] = [b:mcb_detect_sign_val.lnum, b:mcb_detect_sign_val.col]
+  let mcb_win = mcb_renderer.win_above
+
+  if s:is_valid_win(mcb_win.wid) 
+        \ && !pos#beg_buf_pos2height_from_win(lnum, col)[1]
+    call win_execute(winid, 'call s:render_win_above(lnum, col)')
+  endif
+endfunction
+
 function! s:render_win_below(lnum, height)
   let numberwidth = pos#get_numberwidth() - 1
   let lines = ['', eval('printf(" %'. numberwidth. 'd│", '. a:lnum. ')'), '']
@@ -254,9 +269,7 @@ function! s:renderer(delay)
   let beg = mcb_curly_braces.beg
   let end = mcb_curly_braces.end
   call win_execute(win_getid(winnr), 'call s:mcb_close_win_all()')
-  if [beg[0], end[0]] != [0, 0] && beg[0] != end[0]
-    call s:run_timer_task(winnr, beg, end, a:delay)
-  endif
+  call s:run_timer_task(winnr, beg, end, a:delay)
 endfunction
 
 function! s:init()
@@ -265,21 +278,6 @@ function! s:init()
         \'win_below':     {'bufnr': -1, 'wid': -1},
         \'win_in_middle': {'bufnr': -1, 'wid': -1},
         \}
-endfunction
-
-function! s:update_sign_of_win_above()
-  let winid = b:mcb_detect_sign_val.winid
-  let mcb_renderer = getwinvar(winid, 'mcb_renderer', {})
-  if empty(mcb_renderer)
-    return
-  endif
-  let [lnum, col] = [b:mcb_detect_sign_val.lnum, b:mcb_detect_sign_val.col]
-  let mcb_win = mcb_renderer.win_above
-
-  if s:is_valid_win(mcb_win.wid) 
-        \ && !pos#beg_buf_pos2height_from_win(lnum, col)[1]
-    call win_execute(winid, 'call s:render_win_above(lnum, col)')
-  endif
 endfunction
 
 function! renderer#init()
