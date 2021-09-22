@@ -67,7 +67,7 @@ endfunction
 function! s:mcb_close_win_all()
   let winnr = winnr()
   let closed_winnr = win_id2win(expand('<afile>'))
-  if closed_winnr != 0 && closed_winnr != winnr
+  if closed_winnr != 0 && closed_winnr != winnr || !exists('w:mcb_renderer')
     return
   endif
   call s:mcb_close_win(w:mcb_renderer.win_in_middle)
