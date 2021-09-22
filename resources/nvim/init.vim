@@ -457,8 +457,8 @@ Plug '~/.config/nvim/myplugin/ranger.vim' {
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets' {
 	let g:UltiSnipsExpandTrigger="<tab>"
-	let g:UltiSnipsJumpForwardTrigger="<c-o>"
-	let g:UltiSnipsJumpBackwardTrigger="<c-u>"
+	let g:UltiSnipsJumpForwardTrigger="<tab>"
+	let g:UltiSnipsJumpBackwardTrigger="<c-o>"
 	let g:UltiSnipsSnippetDirectories = [
 				\$HOME.'/.config/nvim/Ultisnips/', 
 				\$HOME.'/.config/nvim/plugged/vim-snippets/UltiSnips/'
