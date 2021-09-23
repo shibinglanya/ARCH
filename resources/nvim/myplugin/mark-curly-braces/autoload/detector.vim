@@ -12,10 +12,15 @@ function! s:update_timer.clone(winnr) abort
     let l:other_timer.id    = getwinvar(a:winnr, 'mcb_detector_update_id', -1)
     let l:other_timer.winnr = a:winnr
     function! l:other_timer.task(timer) abort
+        let winid = win_getid(self.winnr)
         if self.id == getwinvar(self.winnr, 'mcb_detector_update_id', -1)
-          let winid = win_getid(self.winnr)
           call win_execute(winid, 'call s:detector(self.winnr, v:false)')
-          "call s:detector(winnr(), v:false)
+          return
+        endif
+        let mcb_curly_braces = getwinvar(self.winnr, 'mcb_curly_braces', {})
+        if [line('w0'), line('w$')] != 
+              \ [mcb_curly_braces.first_lnum, mcb_curly_braces.last_lnum]
+          call win_execute(winid, 'call s:detector(self.winnr, v:false)')
         endif
     endfunction
     return l:other_timer
