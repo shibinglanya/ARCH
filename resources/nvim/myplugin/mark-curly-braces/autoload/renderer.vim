@@ -223,8 +223,11 @@ function! s:update_timer.clone(winnr, beg, end) abort
     let l:other_timer.mcb_end = a:end
     function! l:other_timer.task(timer) abort
         if self.id == getwinvar(self.winnr, 'mcb_renderer_update_id', -1)
-          call win_execute(win_getid(self.winnr), 
-                \'call s:renderer_task(self.mcb_beg, self.mcb_end)')
+          try
+            call win_execute(win_getid(self.winnr), 
+                  \'call s:renderer_task(self.mcb_beg, self.mcb_end)')
+          catch
+          endtry
         endif
     endfunction
     return l:other_timer

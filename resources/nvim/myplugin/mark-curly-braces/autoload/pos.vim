@@ -51,8 +51,7 @@ endfunction
 
 function! s:buf_pos2height_from_screen(lnum, col)
   if a:lnum < line('w0') || a:lnum > line('w$')
-    echoerr printf("renderer.vim: 无效的[%d, %d]值。", a:lnum, a:col)
-    finish
+    throw printf("renderer.vim: 无效的[%d, %d]值。", a:lnum, a:col)
   endif
   let winnr = winnr()
   let min_lnum_in_win = line('w0')
@@ -62,7 +61,7 @@ function! s:buf_pos2height_from_screen(lnum, col)
   return screenpos(winnr,  min_lnum_in_win, 1).row + a:lnum - min_lnum_in_win
 endfunction
 
-function! pos#get_screen_line_by_height_from_win(lnum, height) abort
+function! pos#get_screen_line_by_height_from_win(lnum, height)
   if a:lnum == line('w$')+1 "说明lnum行是跨行文本，且一部分没有被显示
     let height = 
           \ s:buf_pos2height_from_screen(a:lnum-1, len(getline(a:lnum-1))) + 1
