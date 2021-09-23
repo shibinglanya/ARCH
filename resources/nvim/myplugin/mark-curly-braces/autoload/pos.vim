@@ -8,7 +8,7 @@ function! pos#get_width_of_sign_plus_number()
 endfunction
 
 function! pos#get_signwidth()
-  return pos#get_width_of_sign_and_number() - pos#get_numberwidth()
+  return pos#get_width_of_sign_plus_number() - pos#get_numberwidth()
 endfunction
 
 function! s:get_wrap_line(lnum)

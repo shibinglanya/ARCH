@@ -1,6 +1,6 @@
 if get(g:, 'mcb_debug_disabled', 0)
   let echo_file = '/tmp/mcb_debug.log'
-  "call debug#display('renderer.vim', 's:update_sign_of_win_below')
+  call debug#display('renderer.vim', 's:mcb_create_win')
   "call debug#display('renderer.vim', 's:update_sign_of_win_above')
   execute debug#enter(expand('<sfile>'), expand('<slnum>') + 1, echo_file)
 endif
@@ -64,22 +64,15 @@ function! s:mcb_close_win(mcb_win)
   let a:mcb_win.wid        = -1
 endfunction
 
-function! s:mcb_close_all_win()
+function! s:mcb_close_win_all()
+  let winnr = winnr()
   let closed_winnr = win_id2win(expand('<afile>'))
-  let mcb_renderer = getwinvar(closed_winnr, 'mcb_renderer', {})
-  if !empty(mcb_renderer)
-    call s:mcb_close_win(mcb_renderer.win_in_middle)
-    call s:mcb_close_win(mcb_renderer.win_above)
-    call s:mcb_close_win(mcb_renderer.win_below)
+  if closed_winnr != 0 && closed_winnr != winnr || !exists('w:mcb_renderer')
+    return
   endif
-endfunction
-
-function! s:mcb_set_highlight(mcb_win)
-  for len in map(getbufline(a:mcb_win.bufnr, '^', '$'), 'len(v:val)')
-    let idx = get(l:, 'idx', 0) + 1
-    call win_execute(a:mcb_win.wid, printf(
-        \'call matchaddpos("%s", [[%d, 1, %d]])', 'MarkCurlyBraces', idx, len))
-  endfor
+  call s:mcb_close_win(w:mcb_renderer.win_in_middle)
+  call s:mcb_close_win(w:mcb_renderer.win_above)
+  call s:mcb_close_win(w:mcb_renderer.win_below)
 endfunction
 
 function! s:repeat_list(char, count)
@@ -91,7 +84,6 @@ function! s:render_win_in_middle(beg_height, end_height)
   let lines = lines + s:repeat_list('│', a:end_height - a:beg_height + 1)
   let mcb_win = w:mcb_renderer.win_in_middle
   call s:mcb_create_win(mcb_win, 1, 0, 1, lines)
-  call s:mcb_set_highlight(mcb_win)
 endfunction
 
 function! s:get_padding_len(lnum, height)
@@ -105,59 +97,51 @@ function! s:render_win_above2(lnum, height)
   let string = '╭'.repeat('─', s:get_padding_len(a:lnum, a:height))
   let mcb_win = w:mcb_renderer.win_above
   call s:mcb_create_win(mcb_win, 1, a:height, 2, [string])
-  call s:mcb_set_highlight(mcb_win)
-  let mcb_win.name = 's:render_win_above2'
 endfunction
 
 function! s:render_win_below2(lnum, height)
   let string = '╰'.repeat('─', s:get_padding_len(a:lnum, a:height) - 1).'>'
   let mcb_win = w:mcb_renderer.win_below
   call s:mcb_create_win(mcb_win, 1, a:height, 2, [string])
-  call s:mcb_set_highlight(mcb_win)
-  let mcb_win.name = 's:render_win_below2'
 endfunction
 
-function! s:render_win_above(beg_lnum, beg_col)
+function! s:render_win_above(lnum, col)
   let signs = s:get_signs()
   let numberwidth = pos#get_numberwidth() - 1
-  let part1 = s:get_sign_text(a:beg_lnum, signs)
-        \ .eval('printf("%'. numberwidth. 'd ", '. a:beg_lnum. ')')
-  let part2 = pos#get_screen_line_by_bufcol(a:beg_lnum, a:beg_col)
+  let part1 = s:get_sign_text(a:lnum, signs)
+        \ .eval('printf("%'. numberwidth. 'd ", '. a:lnum. ')')
+  let part2 = pos#get_screen_line_by_bufcol(a:lnum, a:col)
   let lines = [part1. part2. ' ─╮'] 
   call add(lines, ' ╭'.repeat('─', strdisplaywidth(lines[0])-3).'╯')
 
   let mcb_win = w:mcb_renderer.win_above
   call s:mcb_create_win(mcb_win, 0, 0, 2, lines)
-  call s:mcb_set_highlight(mcb_win)
-  let mcb_win.name = 's:render_win_above'
 
   ""高亮
-  let heightofline = pos#get_screen_line_by_bufcol(a:beg_lnum, a:beg_col)
-  let offset = len(join(pos#get_wrap_line(a:beg_lnum)[: heightofline - 1], ''))
+  let heightofline = pos#get_screen_line_by_bufcol(a:lnum, a:col)
+  let offset = len(join(pos#get_wrap_line(a:lnum)[: heightofline - 1], ''))
   let offset = offset - len(part2)
   for idx in range(len(part2))
     let col = idx + offset + 1
-    let name = synIDattr(synID(a:beg_lnum, col, 0), 'name')
+    let name = synIDattr(synID(a:lnum, col, 0), 'name')
     if empty(name) | continue | endif
-    call win_execute(mcb_win.wid, printf(
-          \'call matchaddpos("%s", [[1, %d]])', name, idx+len(part1)+1))
+    call win_execute(mcb_win.wid, 
+          \ 'call matchaddpos("'. name.'", [[1, '. (idx+len(part1)+1). ']])')
   endfor
 
-  call s:set_sign_of_win_above(mcb_win.wid, signs, a:beg_lnum)
+  call s:update_sign_of_win_above(mcb_win.wid, signs, a:lnum)
 endfunction
 
-function! s:render_win_below(end_lnum, height)
+function! s:render_win_below(lnum, height)
   let numberwidth = pos#get_numberwidth() - 1
-  let lines = ['', eval('printf(" %'. numberwidth. 'd│",'. a:end_lnum. ')'), '']
+  let lines = ['', eval('printf(" %'. numberwidth. 'd│", '. a:lnum. ')'), '']
   let lines[0] = '╰'.repeat('─', strdisplaywidth(lines[1])-2).'╮'
   let lines[2] = '╭'.repeat('─', strdisplaywidth(lines[1])-2).'╯'
 
   let mcb_win = w:mcb_renderer.win_below
-  call s:mcb_create_win(mcb_win, 1, a:height-3, 2, lines)
-  call s:mcb_set_highlight(mcb_win)
-  let mcb_win.name = 's:render_win_below'
+  let win = s:mcb_create_win(mcb_win, 1, a:height-3, 2, lines)
 
-  call s:set_sign_of_win_below(mcb_win.wid, s:get_signs(), a:end_lnum)
+  call s:update_sign_of_win_below(mcb_win.wid, s:get_signs(), a:lnum)
 endfunction
 
 "过滤优先级低的Sign
@@ -183,40 +167,43 @@ function! s:get_signs()
   return signs
 endfunction
 
-function! s:set_sign_of_win_above(winid, signs, lnum)
-  let numhl = 'LineNr'
-  let signwidth = pos#get_signwidth()
+function! s:update_sign_of_win_above(winid, signs, lnum)
   for sign in a:signs
     if sign.lnum == a:lnum
       let sign_define = sign_getdefined(sign.name)[0]
       let texthl = sign_define.texthl
+      let end = pos#get_signwidth()
       call win_execute(a:winid, printf(
-            \'call matchaddpos("%s", [[1, 1, %d]])', texthl, signwidth))
+            \'call matchaddpos("%s", [[1, 1, %d]])', texthl, end))
       if has_key(sign_define, 'numhl') && !empty(sign_define.numhl)
         let numhl = sign_define.numhl
+      else
+        let numhl = 'LineNr'
       endif
-      break
+      let beg = end
+      let end = pos#get_width_of_sign_plus_number()
+      call win_execute(a:winid, printf(
+            \'call matchaddpos("%s", [[1, %d, %d]])', numhl, beg, end))
+      return
     endif
   endfor
-  let end = pos#get_width_of_sign_plus_number()
-  call win_execute(a:winid, printf(
-        \'call matchaddpos("%s", [[1, %d, %d]])', numhl, signwidth, end))
 endfunction
 
-function! s:set_sign_of_win_below(winid, signs, end_lnum)
-  let numhl = 'LineNr'
-  let end = pos#get_numberwidth()
+function! s:update_sign_of_win_below(winid, signs, lnum)
   for sign in a:signs
-    if sign.lnum == a:end_lnum
+    if sign.lnum == a:lnum
       let sign_define = sign_getdefined(sign.name)[0]
       if has_key(sign_define, 'numhl') && !empty(sign_define.numhl)
         let numhl = sign_define.numhl
+      else
+        let numhl = 'LineNr'
       endif
-      break
+      let end = pos#get_numberwidth()
+      call win_execute(a:winid, printf(
+            \'call matchaddpos("%s", [[2, 1, %d]])', numhl, end))
+      return
     endif
   endfor
-  call win_execute(a:winid, printf(
-        \'call matchaddpos("%s", [[2, 1, %d]])', numhl, end))
 endfunction
 
 function! s:get_sign_text(lnum, signs)
@@ -231,7 +218,7 @@ endfunction
 function! renderer#toggle()
   let w:mcb_closed = (get(w:, 'mcb_closed', 0)+1)%2
   if w:mcb_closed == 1
-    call s:mcb_close_all_win()
+    call s:mcb_close_win_all()
   else
     let g:mcb_curly_braces_winnr = winnr()
     call s:renderer(0)
@@ -278,13 +265,15 @@ function! s:renderer_task(beg, end)
     endif
     call s:render_win_in_middle(screen_beg[1], screen_end[1])
   else
-    call s:mcb_close_all_win()
+    call s:mcb_close_win_all()
   endif
 endfunction
 
 function! s:run_timer_task(winnr, beg, end, delay)
   call timer_start(a:delay, 
         \ s:update_timer.clone(a:winnr, a:beg, a:end).task, {'repeat': 1})
+  "call win_execute(win_getid(a:winnr), 
+  "      \'call s:renderer_task(a:beg, a:end)')
 endfunction
 
 function! s:renderer(delay)
@@ -295,7 +284,7 @@ function! s:renderer(delay)
   let mcb_curly_braces = getwinvar(winnr, 'mcb_curly_braces', {})
   let beg = mcb_curly_braces.beg
   let end = mcb_curly_braces.end
-  call win_execute(win_getid(winnr), 'call s:mcb_close_all_win()')
+  call win_execute(win_getid(winnr), 'call s:mcb_close_win_all()')
   call s:run_timer_task(winnr, beg, end, a:delay)
 endfunction
 
@@ -307,14 +296,15 @@ function! s:update_signs()
   endif
   let [beg_lnum, beg_col] = b:mcb_detect_sign_val.beg
   let mcb_win = mcb_renderer.win_above
-  if s:is_valid_win(mcb_win.wid) && mcb_win.name == 's:render_win_above'
-    call win_execute(winid, 'call s:render_win_above(beg_lnum, beg_col)')
+  if s:is_valid_win(mcb_win.wid) 
+        \ && pos#beg_buf_pos2height_from_win(beg_lnum, beg_col)[0]
+    call win_execute(winid, 'call s:render_win_above(lnum, col)')
   endif
   let [end_lnum, end_col] = b:mcb_detect_sign_val.end
   let mcb_win = mcb_renderer.win_below
-  if s:is_valid_win(mcb_win.wid) && mcb_win.name == 's:render_win_below'
-    let height = pos#end_buf_pos2height_from_win(end_lnum, end_col)[1]
-    call win_execute(winid, 'call s:render_win_below(end_lnum, height)')
+  if s:is_valid_win(mcb_win.wid) 
+        \ && pos#end_buf_pos2height_from_win(beg_lnum, beg_col)[0]
+    call win_execute(winid, 'call s:render_win_below(lnum, col)')
   endif
 endfunction
 
@@ -329,9 +319,9 @@ endfunction
 function! renderer#init()
 	augroup MarkCurlyBracesRenderer
 		autocmd!
-    autocmd User MCB_CurlyBracesListChanged,MCB_CursorMoved call s:renderer(300)
+    autocmd User MCB_CurlyBracesListChanged,MCB_CursorMoved call s:renderer(500)
     autocmd User MCB_SignChanged call s:update_signs()
-    autocmd WinClosed * call s:mcb_close_all_win()
+    autocmd WinClosed * call s:mcb_close_win_all()
     autocmd WinNew,VimEnter  * call s:init()
 	augroup END
 endfunction

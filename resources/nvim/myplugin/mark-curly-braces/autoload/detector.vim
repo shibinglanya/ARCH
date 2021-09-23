@@ -5,35 +5,35 @@ if get(g:, 'mcb_debug_disabled', 0)
 endif
 
 let s:update_timer = {  }
-function! s:update_timer.clone(winnr) abort
+function! s:update_timer.clone(winnr, mandatory) abort
     call setwinvar(a:winnr, 'mcb_detector_update_id', 
                 \ getwinvar(a:winnr, 'mcb_detector_update_id', -1) + 1)
     let l:other_timer       = copy(self)
     let l:other_timer.id    = getwinvar(a:winnr, 'mcb_detector_update_id', -1)
     let l:other_timer.winnr = a:winnr
+    let l:other_timer.mandatory = a:mandatory
     function! l:other_timer.task(timer) abort
         let winid = win_getid(self.winnr)
         if self.id == getwinvar(self.winnr, 'mcb_detector_update_id', -1)
-          call win_execute(winid, 'call s:detector(self.winnr, v:false)')
+          call win_execute(winid, 'call s:detector(self.winnr, self.mandatory)')
           return
         endif
         let mcb_curly_braces = getwinvar(self.winnr, 'mcb_curly_braces', {})
-        if [line('w0'), line('w$')] != 
+        if !empty(mcb_curly_braces) && [line('w0'), line('w$')] != 
               \ [mcb_curly_braces.first_lnum, mcb_curly_braces.last_lnum]
-          call win_execute(winid, 'call s:detector(self.winnr, v:false)')
+          call win_execute(winid, 'call s:detector(self.winnr, self.mandatory)')
         endif
     endfunction
     return l:other_timer
 endfunction
 
-function! s:detect_sign(timer)
+function! s:detect_sign(beg, end)
   let signs1 = get(b:, 'mcb_signs', [])
   let signs2 = sign_getplaced(bufnr(), {'group':'*'})[0].signs
   if signs2 != signs1
     for winid in win_findbuf(bufnr()) 
       let winnr = win_id2win(winid)
-      let [lnum, col] = s:searchpair(winnr, '{', '', '}', 'b')
-      let b:mcb_detect_sign_val = {'winid':winid,'lnum':lnum,'col':col}
+      let b:mcb_detect_sign_val = {'winid':winid,'beg':a:beg,'end':a:end}
       doautocmd User MCB_SignChanged
     endfor
     let b:mcb_signs = signs2
@@ -50,7 +50,7 @@ function! s:detect_win_size_change(timer)
     let size2 = [win_screenpos(winnr), winwidth(winnr), winheight(winnr)]
     if size1 != size2
       call setwinvar(winnr, 'mcb_win_size', size2)
-      call s:detector(winnr, v:true)
+      call timer_start(0, s:update_timer.clone(winnr, 1).task, {'repeat': 1})
     endif
   endfor
 endfunction
@@ -109,25 +109,24 @@ function! s:detector(winnr, mandatory)
     call setwinvar(a:winnr, 'mcb_curly_braces', new_mcb_curly_braces)
     let g:mcb_curly_braces_winnr = a:winnr
     doautocmd User MCB_CurlyBracesListChanged
+  else
+    call s:detect_sign([beg_lnum, beg_col], [end_lnum, end_col])
   endif
   return
 endfunction
 
-function! s:detector_task()
+function! s:timer_start_detector()
   for winid in win_findbuf(bufnr()) 
     let winnr = win_id2win(winid)
-    call timer_start(60, s:update_timer.clone(winnr).task, {'repeat': 1})
+    call timer_start(20, s:update_timer.clone(winnr, 0).task, {'repeat': 1})
   endfor
 endfunction
 
 function! detector#init()
-  let s:timer1 = timer_start(100, function('s:detect_sign'), { 'repeat': -1 })
   let s:timer2 = timer_start(100, function('s:detect_win_size_change'), 
         \ { 'repeat': -1 })
-  
   augroup MarkCurlyBracesDetector
     autocmd!
-    autocmd CursorMoved,CursorHoldI * call s:detector_task()
-    "autocmd BufEnter * call s:detector(winnr())
+    autocmd CursorMoved,CursorHoldI * call s:timer_start_detector()
   augroup END
 endfunction
