@@ -283,6 +283,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 	nmap <silent>           K     :call <SID>show_documentation()<CR>
 
   let g:coc_snippet_next = '<tab>'
+  let g:coc_snippet_prev = '<s-tab>'
 
 	function! s:show_documentation()
 		if (index(['vim','help'], &filetype) >= 0)
@@ -462,7 +463,7 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets' {
 	let g:UltiSnipsExpandTrigger="<tab>"
 	let g:UltiSnipsJumpForwardTrigger="<tab>"
-	let g:UltiSnipsJumpBackwardTrigger="<c-o>"
+	let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 	let g:UltiSnipsSnippetDirectories = [
 				\$HOME.'/.config/nvim/Ultisnips/', 
 				\$HOME.'/.config/nvim/plugged/vim-snippets/UltiSnips/'
