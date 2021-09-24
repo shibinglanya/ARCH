@@ -197,28 +197,31 @@ function! s:get_signs()
 endfunction
 
 function! s:set_sign_of_win_above(winid, signs, lnum)
-  let numhl = 'LineNr'
-  let signwidth = pos#get_signwidth()
+  let numhl = 'CursorLineNr'
+
+  let line = getbufline(winbufnr(a:winid), 1)[0]
+  let [_, beg, end] = matchstrpos(line, '\v\d+')
   for sign in a:signs
     if sign.lnum == a:lnum
       let sign_define = sign_getdefined(sign.name)[0]
       let texthl = sign_define.texthl
       call win_execute(a:winid, printf(
-            \'call matchaddpos("%s", [[1, 1, %d]])', texthl, signwidth))
+            \'call matchaddpos("%s", [[1, 1, %d]])', texthl, beg))
       if has_key(sign_define, 'numhl') && !empty(sign_define.numhl)
         let numhl = sign_define.numhl
       endif
       break
     endif
   endfor
-  let end = pos#get_width_of_sign_plus_number()
   call win_execute(a:winid, printf(
-        \'call matchaddpos("%s", [[1, %d, %d]])', numhl, signwidth, end))
+        \'call matchaddpos("%s", [[1, %d, %d]])', numhl, beg, end-beg+1))
 endfunction
 
 function! s:set_sign_of_win_below(winid, signs, end_lnum)
-  let numhl = 'LineNr'
-  let end = pos#get_numberwidth()
+  let numhl = 'CursorLineNr'
+
+  let line = getbufline(winbufnr(a:winid), 2)[0]
+  let [_, beg, end] = matchstrpos(line, '\v\d+')
   for sign in a:signs
     if sign.lnum == a:end_lnum
       let sign_define = sign_getdefined(sign.name)[0]
@@ -229,7 +232,7 @@ function! s:set_sign_of_win_below(winid, signs, end_lnum)
     endif
   endfor
   call win_execute(a:winid, printf(
-        \'call matchaddpos("%s", [[2, 1, %d]])', numhl, end))
+        \'call matchaddpos("%s", [[2, %d, %d]])', numhl, beg, end-beg+1))
 endfunction
 
 function! s:get_sign_text(lnum, signs)
