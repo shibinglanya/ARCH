@@ -268,7 +268,7 @@ function! s:update_timer.clone(winnr, beg, end) abort
           try
             call win_execute(win_getid(self.winnr), 
                   \'call s:renderer_task(self.mcb_beg, self.mcb_end)')
-          "catch
+          catch
           endtry
         endif
     endfunction
@@ -329,7 +329,8 @@ function! s:update_signs()
   let [end_lnum, end_col] = b:mcb_detect_sign_val.end
   let mcb_win = mcb_renderer.win_below
   if s:is_valid_win(mcb_win.wid) && mcb_win.name == 's:render_win_below'
-    let height = pos#end_buf_pos2height_from_win(end_lnum, end_col)[1]
+    call win_execute(winid, 
+          \'let height = pos#end_buf_pos2height_from_win(end_lnum, end_col)[1]')
     call win_execute(winid, 'call s:render_win_below(end_lnum, height)')
   endif
 endfunction

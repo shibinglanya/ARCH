@@ -33,7 +33,13 @@ function! s:detect_sign(beg, end)
   if signs2 != signs1
     for winid in win_findbuf(bufnr()) 
       let winnr = win_id2win(winid)
-      let b:mcb_detect_sign_val = {'winid':winid,'beg':a:beg,'end':a:end}
+      if winnr == winnr()
+        let b:mcb_detect_sign_val = {'winid':winid,'beg':a:beg,'end':a:end}
+      else
+        let beg = s:searchpair(winnr, '{', '', '}', 'b')
+        let end = s:searchpair(winnr, '{', '', '}', '')
+        let b:mcb_detect_sign_val = {'winid':winid,'beg':beg,'end':end}
+      endif
       doautocmd User MCB_SignChanged
     endfor
     let b:mcb_signs = signs2
