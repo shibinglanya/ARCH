@@ -75,10 +75,23 @@ function! s:mcb_close_all_win()
 endfunction
 
 function! s:mcb_set_highlight(mcb_win)
+  let hlname = 'MarkCurlyBraces'
+  if !hlexists(hlname)
+    return
+  endif
   for len in map(getbufline(a:mcb_win.bufnr, '^', '$'), 'len(v:val)')
     let idx = get(l:, 'idx', 0) + 1
+
+    "临时解决方案
+    if idx == 1 && getbufline(a:mcb_win.bufnr, 1)[0] =~ '\v\s─╮$'
+      let beg = len - len('─╮')
+      call win_execute(a:mcb_win.wid, printf(
+          \'call matchaddpos("%s", [[%d, %d, %d]])', hlname, idx, beg, len))
+      continue
+    endif
+
     call win_execute(a:mcb_win.wid, printf(
-        \'call matchaddpos("%s", [[%d, 1, %d]])', 'MarkCurlyBraces', idx, len))
+        \'call matchaddpos("%s", [[%d, 1, %d]])', hlname, idx, len))
   endfor
 endfunction
 
@@ -137,7 +150,7 @@ function! s:render_win_above(beg_lnum, beg_col)
   let offset = offset - len(part2)
   for idx in range(len(part2))
     let col = idx + offset + 1
-    let name = synIDattr(synID(a:beg_lnum, col, 0), 'name')
+    let name = synIDattr(synID(a:beg_lnum, col, 1), 'name')
     if empty(name) | continue | endif
     call win_execute(mcb_win.wid, printf(
           \'call matchaddpos("%s", [[1, %d]])', name, idx+len(part1)+1))
