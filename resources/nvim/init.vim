@@ -282,6 +282,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 	imap <silent><expr> <c-n> coc#refresh()
 	nmap <silent>           K     :call <SID>show_documentation()<CR>
 
+  let g:coc_snippet_next = '<tab>'
+
 	function! s:show_documentation()
 		if (index(['vim','help'], &filetype) >= 0)
 			execute 'h '.expand('<cword>')
