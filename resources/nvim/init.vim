@@ -431,7 +431,9 @@ Plug 'lambdalisue/suda.vim'
 
 
 Plug '~/.config/nvim/myplugin/mark-curly-braces' {
-  nmap <silent> <leader>i <plug>(mcb-toggle-win)
+  nmap <silent> <leader>i <plug>(mcb-toggle)
+	"autocmd VimEnter * hi MarkCurlyBraces cterm=bold ctermfg =	237
+	autocmd VimEnter * hi MarkCurlyBraces cterm=bold ctermfg =	30
   "let g:mcb_debug_disabled = 1
 }
 
