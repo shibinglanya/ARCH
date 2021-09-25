@@ -124,7 +124,7 @@ endfunction
 function! s:timer_start_detector()
   for winid in win_findbuf(bufnr()) 
     let winnr = win_id2win(winid)
-    call timer_start(20, s:update_timer.clone(winnr, 0).task, {'repeat': 1})
+    call timer_start(100, s:update_timer.clone(winnr, 0).task, {'repeat': 1})
   endfor
 endfunction
 
