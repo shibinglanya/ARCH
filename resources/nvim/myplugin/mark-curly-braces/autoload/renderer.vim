@@ -282,6 +282,12 @@ function! s:renderer_task(beg, end)
     let [screen_beg, screen_end] = pos#buf_pos2height_from_win(
           \ beg_lnum, beg_col, end_lnum, end_col)
 
+    if !hlexists('MarkCurlyBraces') || get(s:, 'set', 0)
+      let name = synIDattr(synID(beg_lnum, beg_col, 1), 'name')
+      execute('hi link MarkCurlyBraces '.(empty(name)?'LineNr':name))
+      let s:set = 1
+    endif
+
     if screen_beg == screen_end
       return
     endif
