@@ -96,6 +96,9 @@ function! s:searchpair(winnr, start, middle, end, flags)
 endfunction
 
 function! s:detector(winnr, mandatory)
+  if getwinvar(a:winnr, 'mcb_closed', 0) == 1
+    return
+  endif
   let [beg_lnum, beg_col] = s:searchpair(a:winnr, '{', '', '}', 'b')
   let [end_lnum, end_col] = s:searchpair(a:winnr, '{', '', '}', '')
 
@@ -124,7 +127,7 @@ endfunction
 function! s:timer_start_detector()
   for winid in win_findbuf(bufnr()) 
     let winnr = win_id2win(winid)
-    call timer_start(100, s:update_timer.clone(winnr, 0).task, {'repeat': 1})
+    call timer_start(60, s:update_timer.clone(winnr, 0).task, {'repeat': 1})
   endfor
 endfunction
 
