@@ -312,7 +312,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 	autocmd VimEnter * hi CocExplorerDiagnosticError     cterm=none ctermfg	=	9
 	autocmd VimEnter * hi CocExplorerDiagnosticWarning   cterm=none ctermfg	=	130
 
-	autocmd CursorHold * silent call CocActionAsync('highlight')
+  "文件过大的话会造成卡顿。
+	"autocmd CursorHold * silent call CocActionAsync('highlight')
 	autocmd VimEnter * hi CocHighlightText cterm = italic,bold,underline
 }
 "╰────────────────────────────────────────────────────────────────────────────╯
@@ -436,7 +437,6 @@ Plug 'lambdalisue/suda.vim'
 Plug '~/.config/nvim/myplugin/mark-curly-braces' {
   nmap <silent> <leader>i <plug>(mcb-toggle)
 	"autocmd VimEnter * hi MarkCurlyBraces cterm=bold ctermfg =	237
-	autocmd VimEnter * hi MarkCurlyBraces cterm=bold ctermfg =	30
   "let g:mcb_debug_disabled = 1
 }
 
