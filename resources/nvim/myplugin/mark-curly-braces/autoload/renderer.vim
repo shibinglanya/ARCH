@@ -276,22 +276,28 @@ function! s:update_timer.clone(winnr, beg, end) abort
 endfunction
 
 function! s:renderer_task(beg, end)
-  if [a:beg[0], a:end[0]] != [0, 0] && a:beg[0] != a:end[0]
-    let [beg_lnum, beg_col] = a:beg
-    let [end_lnum, end_col] = a:end
-
+  let [beg_lnum, beg_col] = a:beg
+  let [end_lnum, end_col] = a:end
+  if [beg_lnum, end_lnum] != [0, 0]
     let [screen_beg, screen_end] = pos#buf_pos2height_from_win(
           \ beg_lnum, beg_col, end_lnum, end_col)
+
+    if screen_beg == screen_end
+      return
+    endif
+
     if screen_beg[0] == v:true
       call s:render_win_above(beg_lnum, beg_col)
     else
       call s:render_win_above2(screen_beg[2], screen_beg[1])
     endif
+
     if screen_end[0] == v:true
       call s:render_win_below(end_lnum, screen_end[1])
     else
       call s:render_win_below2(screen_end[2], screen_end[1])
     endif
+
     call s:render_win_in_middle(screen_beg[1], screen_end[1])
   else
     call s:mcb_close_all_win()
