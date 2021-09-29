@@ -53,7 +53,8 @@ function! s:detect_win_size_change(timer)
       return
     endif
     let size1 = getwinvar(winnr, 'mcb_win_size', [])
-    let size2 = [win_screenpos(winnr), winwidth(winnr), winheight(winnr)]
+    call win_execute(win_getid(winnr), 'let row = screenrow()')
+    let size2 = [win_screenpos(winnr), winwidth(winnr), winheight(winnr), row]
     if size1 != size2
       call setwinvar(winnr, 'mcb_win_size', size2)
       call timer_start(0, s:update_timer.clone(winnr, 1).task, {'repeat': 1})
