@@ -75,8 +75,7 @@ function! s:mcb_close_all_win()
 endfunction
 
 function! s:mcb_set_highlight(mcb_win)
-  let hlname = 'MarkCurlyBraces'
-  if !hlexists(hlname)
+  if !hlexists(s:hlname)
     return
   endif
   for len in map(getbufline(a:mcb_win.bufnr, '^', '$'), 'len(v:val)')
@@ -86,12 +85,12 @@ function! s:mcb_set_highlight(mcb_win)
     if idx == 1 && getbufline(a:mcb_win.bufnr, 1)[0] =~ '\v\s─╮$'
       let beg = len - len('─╮')
       call win_execute(a:mcb_win.wid, printf(
-          \'call matchaddpos("%s", [[%d, %d, %d]])', hlname, idx, beg, len))
+          \'call matchaddpos("%s", [[%d, %d, %d]])', s:hlname, idx, beg, len))
       continue
     endif
 
     call win_execute(a:mcb_win.wid, printf(
-        \'call matchaddpos("%s", [[%d, 1, %d]])', hlname, idx, len))
+        \'call matchaddpos("%s", [[%d, 1, %d]])', s:hlname, idx, len))
   endfor
 endfunction
 
@@ -282,10 +281,11 @@ function! s:renderer_task(beg, end)
     let [screen_beg, screen_end] = pos#buf_pos2height_from_win(
           \ beg_lnum, beg_col, end_lnum, end_col)
 
-    if !hlexists('MarkCurlyBraces') || get(s:, 'set', 0)
+    if !hlexists('MarkCurlyBraces')
       let name = synIDattr(synID(beg_lnum, beg_col, 1), 'name')
-      execute('hi link MarkCurlyBraces '.(empty(name)?'LineNr':name))
-      let s:set = 1
+      let s:hlname = empty(name)?'LineNr':name
+    else
+      let s:hlname = 'MarkCurlyBraces'
     endif
 
     if screen_beg == screen_end
