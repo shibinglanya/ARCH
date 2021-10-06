@@ -139,6 +139,6 @@ function! detector#init()
         \ { 'repeat': -1 })
   augroup MarkCurlyBracesDetector
     autocmd!
-    autocmd CursorMoved,CursorHoldI * call s:timer_start_detector()
+    autocmd CursorHold,CursorHoldI * call s:timer_start_detector()
   augroup END
 endfunction
