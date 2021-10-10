@@ -123,6 +123,13 @@ Plug 'vim-airline/vim-airline' {
 
   "~/.config/nvim/autoload/airline/themes/dark.vim
 	let g:airline_theme = 'dark'
+
+
+  let g:airline#extensions#tabline#show_buffers = 1
+  let g:airline#extensions#tabline#show_splits = 0
+  let g:airline#extensions#tabline#show_tab_nr = 0
+  let g:airline#extensions#tabline#show_tab_type = 0
+  let g:airline#extensions#tabline#show_close_button = 0
 }
 
 Plug 'easymotion/vim-easymotion' {
@@ -156,7 +163,7 @@ Plug '~/.config/nvim/myplugin/vim-operate-windows-fast' {
 	let g:lens#height_resize_max = 30
 	let g:lens#height_resize_min = 20
 	let g:lens#width_resize_max  = 130
-	let g:lens#width_resize_min  = 30
+	let g:lens#width_resize_min  = &colorcolumn
 
 	nnoremap <silent> <c-h> <C-W>h
 	nnoremap <silent> <c-j> <C-W>j
@@ -440,6 +447,8 @@ Plug '~/.config/nvim/myplugin/mark-curly-braces' {
   "let g:mcb_debug_disabled = 1
 }
 
+Plug '~/.config/nvim/myplugin/aerial-view' {
+}
 "Plug 'iamcco/mathjax-support-for-mkdp'
 
 
