@@ -72,6 +72,12 @@ function! s:render_win_in_middle(beg_height, end_height)
   call s:mcb_set_highlight(mcb_win)
 endfunction
 
+function! s:render_bottom_win(length)
+  let mcb_win = w:view_renderer.bottom_win
+  call s:mcb_create_win(mcb_win, 0, &lines, 1, [repeat('█', a:length)])
+  call s:mcb_set_highlight(mcb_win)
+endfunction
+
 function! s:mcb_set_highlight(mcb_win)
   let hlname = 'ViewHighlight'
   if !hlexists(hlname)
@@ -85,7 +91,8 @@ function! s:mcb_set_highlight(mcb_win)
 endfunction
 
 function! renderer#init()
-  let w:view_renderer = {'win_in_middle': {'bufnr': -1, 'wid': -1}}
+  let w:view_renderer = {'win_in_middle': {'bufnr': -1, 'wid': -1},
+        \'bottom_win': {'bufnr': -1, 'wid': -1}}
 endfunction
 
 function! renderer#render(lnum_beg, lnum_end, set_pos)
@@ -96,5 +103,11 @@ function! renderer#render(lnum_beg, lnum_end, set_pos)
     call s:mcb_close_win(w:view_renderer.win_in_middle)
     call s:render_win_in_middle(a:lnum_beg-line('w0'), a:lnum_end - line('w0'))
     let s:range = range
+  endif
+  let length = float2nr(floor((line('.')+0.0) / line('$') * winwidth(winnr())))
+  if get(s:, 'length', -1) != length
+    call s:mcb_close_win(w:view_renderer.bottom_win)
+    call s:render_bottom_win(length+1)
+    let s:length = length
   endif
 endfunction
