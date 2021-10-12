@@ -448,6 +448,13 @@ Plug '~/.config/nvim/myplugin/mark-curly-braces' {
 }
 
 Plug '~/.config/nvim/myplugin/aerial-view' {
+  if !empty(getenv('TMUX_PANE'))
+    let session_name = 
+          \ trim(system('tmux display -p -F "#{session_name}" -t $TMUX_PANE'))
+    if session_name =~ 'st'
+      let g:aerial_view_enable = 0
+    endif
+  endif
 }
 "Plug 'iamcco/mathjax-support-for-mkdp'
 
