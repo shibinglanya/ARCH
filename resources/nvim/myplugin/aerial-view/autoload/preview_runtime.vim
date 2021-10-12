@@ -1,9 +1,11 @@
-execute 'source '. expand('<sfile>:h'). '/socket.vim'
 execute 'source '. expand('<sfile>:h'). '/renderer.vim'
-command! -nargs=+ SocketExec :call socket#command($SERVERNAME, <f-args>)
+call renderer#init() "区间标记
+
+execute 'source '. expand('<sfile>:h'). '/socket.vim'
+call socket#init($SERVERNAME)
+SocketExec 'call socket#init("%s")', v:servername
+
 SocketExec 'call setenv("CLIENTWINDOWID", %d)', $WINDOWID
-SocketExec 'command! -nargs=+ SocketExec :call socket#command("%s", <f-args>)', 
-      \ v:servername
 
 function! Edit(file) abort
   if expand('%:p') == a:file
@@ -54,7 +56,6 @@ set noautoread
 set shortmess+=c
 set noshowcmd
 
-call renderer#init() "区间标记
 
 SocketExec 'call preview#active(v:true)'
 autocmd VimLeavePre * SocketExec 'call preview#close(v:true)'
