@@ -346,8 +346,8 @@ Plug 'yggdroot/indentline' {
 "自定义按键配置basic
 "╭────────────────────────────────────────────────────────────────────────────╮
 inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<right>"
-inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<left>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<left>"
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<right>"
 inoremap				<C-g> <Del>
 "inoremap <silent> <C-l> <C-R>=<SID>cursor_to_ending()<CR>
 inoremap <silent><expr> <C-l> pumvisible() ? "\<C-y>\<Esc>$a" : "\<Esc>$a"
