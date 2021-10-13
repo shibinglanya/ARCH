@@ -1,8 +1,3 @@
-augroup AerialViewScrollBar
-  autocmd!
-  autocmd CursorMoved * call s:update_scroll_bar()
-augroup END
-
 function! s:init()
   let w:scroll_bar = {}
   let w:scroll_bar.range = [-1, -1]
@@ -11,15 +6,11 @@ function! s:init()
       \ winwidth(winnr()), 0, 1, winheight(winnr()), w:scroll_bar.bufnr, 1)
 endfunction
 
-function! s:update_scroll_bar()
-  let range = get(g:, 'scroll_bar_range', [-1, -1])
-  if range == [-1, -1]
-    return
-  endif
+function! scroll_bar#flush(beg, end)
   if !exists('w:scroll_bar')
     call s:init()
   endif
-  let range = [range[0] - line('w0'), range[1] - line('w0')]
+  let range = [a:beg - line('w0'), a:end - line('w0')]
   if range != w:scroll_bar.range
     call s:set_highlight(range[0], range[1])
     let w:scroll_bar.range = range

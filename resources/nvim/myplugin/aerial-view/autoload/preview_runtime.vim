@@ -7,9 +7,9 @@ SocketExec 'call socket#init("%s")', v:servername
 SocketExec 'call setenv("CLIENTWINDOWID", %d)', $WINDOWID
 
 function! Cursor(beg, end, set_pos)
-  let g:scroll_bar_range = [a:beg, a:end]
   call setpos('.', a:set_pos)
   normal zz
+  call scroll_bar#flush(a:beg, a:end)
 endfunction
 
 function! Edit(file) abort
