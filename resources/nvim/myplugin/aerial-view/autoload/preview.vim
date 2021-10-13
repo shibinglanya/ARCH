@@ -120,8 +120,8 @@ endfunction
 
 function! s:update_cursor()
   if buflisted(bufnr()) && exists(':SocketExec') && preview#active()
-    SocketExec "call renderer#render(%d, %d, %s)", 
-          \ line('w0'), line('w$'), string(getcurpos())
+    SocketExec "call Cursor(%d, %d, %s)", 
+          \ line('w0'), line('w$'), getcurpos()
   endif
 endfunction
 

@@ -1,11 +1,16 @@
-execute 'source '. expand('<sfile>:h'). '/renderer.vim'
-call renderer#init() "区间标记
+execute 'source '. expand('<sfile>:h'). '/scroll_bar.vim'
 
 execute 'source '. expand('<sfile>:h'). '/socket.vim'
 call socket#init($SERVERNAME)
 SocketExec 'call socket#init("%s")', v:servername
 
 SocketExec 'call setenv("CLIENTWINDOWID", %d)', $WINDOWID
+
+function! Cursor(beg, end, set_pos)
+  let g:scroll_bar_range = [a:beg, a:end]
+  call setpos('.', a:set_pos)
+  normal zz
+endfunction
 
 function! Edit(file) abort
   if expand('%:p') == a:file

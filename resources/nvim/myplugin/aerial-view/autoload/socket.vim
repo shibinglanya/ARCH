@@ -18,10 +18,10 @@ function! s:commands.set(command) dict
 endfunction
 
 function! s:callback(timer)
-  if !s:commands.empty()
+  while !s:commands.empty()
     execute s:commands.get()
     let s:callback_idx = 0
-  endif
+  endwhile
   let s:callback_idx = get(s:, 'callback_idx', 0) + 1
   if s:callback_idx >= 500
     let s:callback_idx = 0

@@ -64,4 +64,4 @@ let g:rainbow_conf = {
       \ 'parentheses': parentheses
       \}
 
-autocmd VimEnter * hi ViewHighlight cterm=bold ctermfg = 190
+autocmd VimEnter * hi AerialViewScrollBar cterm=bold ctermbg = 190
