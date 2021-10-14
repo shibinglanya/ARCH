@@ -169,6 +169,11 @@ function! s:stop_task_of_detecting_columns()
   endif
 endfunction
 
+function! s:chansend(...)
+  call chansend(s:preview.job_id, 
+        \ function('printf', a:000 + [$CLIENTWINDOWID])())
+endfunction
+
 function! s:move(col_x, row_y)
   if preview#active()
     if tmux_util#is_used()
@@ -176,21 +181,19 @@ function! s:move(col_x, row_y)
     else
       let [offset_x, offset_y] = [0, 0]
     endif
-    call chansend(s:preview.job_id, printf("move\n%d %d %d\n", 
-          \ offset_x + a:col_x, offset_y + a:row_y, $CLIENTWINDOWID))
+    call s:chansend("move\n%d %d %d\n", offset_x + a:col_x, offset_y + a:row_y)
   endif
 endfunction
 
 function! s:hide()
   if preview#active()
-    call chansend(s:preview.job_id, printf("hide\n%d\n", $CLIENTWINDOWID))
+    call s:chansend("hide\n%d\n")
   endif
 endfunction
 
 function! s:resize(columns, lines)
   if preview#active()
-    call chansend(s:preview.job_id, printf("resize\n%d %d %d\n", 
-          \ a:columns, a:lines, $CLIENTWINDOWID))
+    call s:chansend("resize\n%d %d %d\n", a:columns, a:lines)
   endif
 endfunction
 
@@ -201,14 +204,13 @@ function! s:move_resize(col_x, row_y, columns, lines)
     else
       let [offset_x, offset_y] = [0, 0]
     endif
-    call chansend(s:preview.job_id, printf("move_resize\n%d %d %d %d %d\n", 
-          \ offset_x + a:col_x, offset_y + a:row_y, 
-          \ a:columns, a:lines, $CLIENTWINDOWID))
+    call s:chansend("move_resize\n%d %d %d %d %d\n",
+          \ offset_x + a:col_x, offset_y + a:row_y, a:columns, a:lines)
   endif
 endfunction
 
 function! s:show()
   if preview#active()
-    call chansend(s:preview.job_id, printf("show\n%d\n", $CLIENTWINDOWID))
+    call s:chansend("show\n%d\n")
   endif
 endfunction
