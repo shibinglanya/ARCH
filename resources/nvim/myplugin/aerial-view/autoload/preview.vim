@@ -59,7 +59,7 @@ function! preview#open(font, win_columns)
       call s:timer_stop(s:show_timer)
     endif
   endfunction
-  let s:show_timer = s:timer_always(100, 
+  let s:show_timer = s:timer_always(300, 
         \ function('s:show_task', [a:win_columns]))
   augroup AerialView_Preview
     autocmd!
