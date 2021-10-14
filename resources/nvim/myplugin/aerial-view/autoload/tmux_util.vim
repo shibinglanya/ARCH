@@ -1,5 +1,5 @@
 function! tmux_util#is_used()
-  return tmux_util#get_pane() != v:null
+  return !empty($TMUX) && tmux_util#get_pane() != v:null
 endfunction
 
 function! tmux_util#get_pane()
