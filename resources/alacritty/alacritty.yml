@@ -411,7 +411,7 @@ cursor:
     #   - Off: Disable blinking by default
     #   - On: Enable blinking by default
     #   - Always: Force the cursor to always blink
-    blinking: Always
+    blinking: Off
 
   # Vi mode cursor style
   #
@@ -745,7 +745,7 @@ mouse:
 #
 # If the same trigger is assigned to multiple actions, all of them are executed
 # in the order they were defined in.
-key_bindings:
+#key_bindings:
   #- { key: Paste,                                       action: Paste          }
   #- { key: Copy,                                        action: Copy           }
   #- { key: L,         mods: Control,                    action: ClearLogNotice }
@@ -757,9 +757,9 @@ key_bindings:
 
   # Vi Mode
   #- { key: Space,  mods: Shift|Control, mode: Vi|~Search, action: ScrollToBottom          }
-  - { key: Return,  mods: Control, mode: ~Search,    action: ToggleViMode            }
+  #- { key: Return,  mods: Control, mode: ~Search,    action: ToggleViMode            }
   #- { key: Escape,                      mode: Vi|~Search, action: ClearSelection          }
-  - { key: I,                           mode: Vi|~Search, action:  None         }
+  #- { key: I,                           mode: Vi|~Search, action:  None         }
   #- { key: I,                           mode: Vi|~Search, action: ToggleViMode            }
   #- { key: C,      mods: Control,       mode: Vi|~Search, action: ToggleViMode            }
   #- { key: Y,      mods: Control,       mode: Vi|~Search, action: ScrollLineUp            }
@@ -786,8 +786,8 @@ key_bindings:
   #- { key: Down,                        mode: Vi|~Search, action: Down                    }
   #- { key: Left,                        mode: Vi|~Search, action: Left                    }
   #- { key: Right,                       mode: Vi|~Search, action: Right                   }
-  - { key: Key9,             mode: Vi|~Search, action: First                   }
-  - { key: Key0,             mode: Vi|~Search, action: Last                    }
+  #- { key: Key9,             mode: Vi|~Search, action: First                   }
+  #- { key: Key0,             mode: Vi|~Search, action: Last                    }
   #- { key: Key6,   mods: Shift,         mode: Vi|~Search, action: FirstOccupied           }
   #- { key: H,      mods: Shift,         mode: Vi|~Search, action: High                    }
   #- { key: M,      mods: Shift,         mode: Vi|~Search, action: Middle                  }
@@ -800,7 +800,7 @@ key_bindings:
   #- { key: E,      mods: Shift,         mode: Vi|~Search, action: WordRightEnd            }
   #- { key: Key5,   mods: Shift,         mode: Vi|~Search, action: Bracket                 }
   #- { key: Slash,                       mode: Vi|~Search, action: SearchForward           }
-  - { key: 53,  mods: Shift,         mode: Vi|~Search, action: SearchBackward          }
+  #- { key: 53,  mods: Shift,         mode: Vi|~Search, action: SearchBackward          }
   #- { key: N,                           mode: Vi|~Search, action: SearchNext              }
   #- { key: N,      mods: Shift,         mode: Vi|~Search, action: SearchPrevious          }
 
