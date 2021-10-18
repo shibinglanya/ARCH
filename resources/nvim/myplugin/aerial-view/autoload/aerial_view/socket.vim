@@ -38,31 +38,31 @@ function! s:timer_stop(timer_id)
   call timer_stop(a:timer_id)
 endfunction
 
-function! socket#_command(command_list)
+function! aerial_view#socket#_command(command_list)
   call s:commands.set(function('printf', a:command_list)())
 endfunction
 
-function! socket#command(path, ...)
+function! aerial_view#socket#command(path, ...)
   if s:commands.socket_id == 0
     let s:commands.socket_id = sockconnect('pipe', a:path, {'rpc': 1})
     if s:commands.socket_id == 0
       return
     else
-      autocmd VimLeavePre * call socket#close()
+      autocmd VimLeavePre * call aerial_view#socket#close()
     endif
   endif
   call rpcrequest(s:commands.socket_id, 'nvim_command',
-        \ printf('call socket#_command(%s)', a:000))
+        \ printf('call aerial_view#socket#_command(%s)', a:000))
 endfunction
 
-function! socket#close()
+function! aerial_view#socket#close()
   call chanclose(s:commands.socket_id)
   let s:commands.socket_id = 0
 endfunction
 
-function! socket#init(path)
-  call socket#close()
+function! aerial_view#socket#init(path)
+  call aerial_view#socket#close()
   let execute_command = 
-        \ 'command! -nargs=+ SocketExec :call socket#command("%s", <args>)'
+        \ 'command! -nargs=+ SocketExec :call aerial_view#socket#command("%s", <args>)'
   execute printf(execute_command, a:path)
 endfunction

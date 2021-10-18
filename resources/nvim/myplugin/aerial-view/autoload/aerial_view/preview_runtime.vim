@@ -1,8 +1,8 @@
 execute 'source '. expand('<sfile>:h'). '/scroll_bar.vim'
 
 execute 'source '. expand('<sfile>:h'). '/socket.vim'
-call socket#init($SERVERNAME)
-SocketExec 'call socket#init("%s")', v:servername
+call aerial_view#socket#init($SERVERNAME)
+SocketExec 'call aerial_view#socket#init("%s")', v:servername
 
 SocketExec 'call setenv("CLIENTWINDOWID", %d)', $WINDOWID
 
@@ -48,6 +48,9 @@ function! UpateBuffer(lines)
   endif
 endfunction
 
+function! s:timer_always(time, callback)
+  return timer_start(a:time, a:callback, {'repeat': -1})
+endfunction
 
 cd /tmp
 set nowrap
@@ -61,8 +64,8 @@ set noautoread
 set shortmess+=c
 set noshowcmd
 
-
-SocketExec 'call preview#active(v:true)'
-autocmd VimLeavePre * SocketExec 'call preview#close(v:true)'
+autocmd VimLeavePre * SocketExec 'call aerial_view#preview#close("preview_runtime")'
 
 execute 'source '. stdpath('config'). '/view.vim'
+
+SocketExec 'call aerial_view#preview#active(v:true)'

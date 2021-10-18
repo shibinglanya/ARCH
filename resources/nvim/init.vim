@@ -448,6 +448,7 @@ Plug '~/.config/nvim/myplugin/mark-curly-braces' {
 }
 
 Plug '~/.config/nvim/myplugin/aerial-view' {
+  "let g:aerial_view_log_file = '/tmp/123.txt'
   if !empty(getenv('TMUX_PANE'))
     let session_name = 
           \ trim(system('tmux display -p -F "#{session_name}" -t $TMUX_PANE'))

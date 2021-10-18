@@ -21,9 +21,13 @@ public:
   void resize(Window win, unsigned int columns, unsigned int lines);
   void move_resize(Window win, int col_x, int row_y, unsigned int columns,
                    unsigned int lines);
+  void hide_resize(Window win, int col_x, int row_y, unsigned int columns,
+                   unsigned int lines);
   void move(Window win, int col_x, int row_y);
   void show(Window win);
   void hide(Window win);
+
+  void reparent(Window parent, Window win);
 
   ~AerialViewWindow() { XCloseDisplay(m_display); }
 
@@ -65,6 +69,14 @@ int main(int argc, char *argv[]) {
       int col_x = 0, row_y = 0, columns = 0, lines = 0, winid = 0;
       scanf("%d %d %d %d %d", &col_x, &row_y, &columns, &lines, &winid);
       view_window.move_resize((Window)winid, col_x, row_y, columns, lines);
+    } else if (!strcmp(buffer, "hide_resize")) {
+      int col_x = 0, row_y = 0, columns = 0, lines = 0, winid = 0;
+      scanf("%d %d %d %d %d", &col_x, &row_y, &columns, &lines, &winid);
+      view_window.hide_resize((Window)winid, col_x, row_y, columns, lines);
+    } else if (!strcmp(buffer, "reparent")) {
+      int parent = 0, winid = 0;
+      scanf("%d %d", &parent, &winid);
+      view_window.reparent((Window)parent, (Window)winid);
     } else {
     }
   } while (true);
@@ -154,6 +166,17 @@ void AerialViewWindow::move_resize(Window win, int col_x, int row_y,
   auto height = YPIXEL(m_parent_winsize, lines);
   XMoveResizeWindow(m_display, win, x, y, width, height);
   XFlush(m_display);
+  m_preview_show_x = x;
+  m_preview_show_y = y;
+}
+
+void AerialViewWindow::hide_resize(Window win, int col_x, int row_y,
+                                   unsigned int columns, unsigned int lines) {
+  resize(win, columns, lines);
+  auto x = XPIXEL(m_parent_winsize, col_x);
+  auto y = YPIXEL(m_parent_winsize, row_y);
+  m_preview_show_x = x;
+  m_preview_show_y = y;
 }
 
 void AerialViewWindow::move(Window win, int col_x, int row_y) {
@@ -173,7 +196,18 @@ void AerialViewWindow::show(Window win) {
 void AerialViewWindow::hide(Window win) {
   XWindowAttributes attr;
   XGetWindowAttributes(m_display, win, &attr);
+  //已经被隐藏了
+  if (attr.x < 0 || attr.y < 0) {
+    return;
+  }
+  m_preview_show_x = attr.x;
+  m_preview_show_y = attr.y;
   XMoveWindow(m_display, win, -attr.width, 0);
+  XFlush(m_display);
+}
+
+void AerialViewWindow::reparent(Window parent, Window win) {
+  XReparentWindow(m_display, win, parent, m_preview_show_x, m_preview_show_y);
   XFlush(m_display);
 }
 
