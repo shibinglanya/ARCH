@@ -16,9 +16,11 @@ endif
 
 function! aerial_view#preview#open(who, font, win_columns)
 """ '尝试打开视图，由 %s 触发', a:who
-  if aerial_view#preview#active()
+  if aerial_view#preview#active() || get(s:, 'preview_isopen', 0) == 1
     return
   endif
+
+  let s:preview_isopen = 1
 
   call s:start_task_of_detecting_columns(a:win_columns) "VimResized
 
@@ -44,6 +46,7 @@ function! aerial_view#preview#open(who, font, win_columns)
 
 """ '打开视图，由 %s 触发', a:who
 
+      let s:preview_isopen = 0
     endif
   endfunction
 
