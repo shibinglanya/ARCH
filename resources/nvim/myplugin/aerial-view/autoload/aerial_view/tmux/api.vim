@@ -37,6 +37,17 @@ function! aerial_view#tmux#api#is_attached()
   return s:get_tmux_output(fval) == '1,1,0'
 endfunction
 
+function! aerial_view#tmux#api#get_zoom_state()
+  let fval = '#{pane_active},#{window_zoomed_flag},#{pane_in_mode}'
+  let ret = s:get_tmux_output(fval)
+  if ret == '0,1,0'
+    return 0
+  elseif ret == '0,0,0'
+    return 1
+  endif
+  return -1
+endfunction
+
 function! aerial_view#tmux#api#is_attached_by_tmux()
   let fval = '#{e|>=:#{session_attached},1},#{window_active},#{pane_in_mode}'
   return s:get_tmux_output_by_tmux(fval) == '1,1,0'

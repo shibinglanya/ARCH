@@ -11,7 +11,8 @@
 
 class AerialViewWindow {
 public:
-  AerialViewWindow(Window embed, const char *config, const char *font);
+  AerialViewWindow(Window embed, const char *config, const char *font, unsigned,
+                   unsigned, unsigned, unsigned);
 
   AerialViewWindow(const AerialViewWindow &) = delete;
   AerialViewWindow(AerialViewWindow &&) = delete;
@@ -36,6 +37,9 @@ private:
 
   Window m_parent;
   winsize m_parent_winsize;
+
+  unsigned m_offset_x, m_offset_y;
+  unsigned m_offset_width, m_offset_height;
 
   int m_preview_show_x, m_preview_show_y;
 };
@@ -84,18 +88,33 @@ int main(int argc, char *argv[]) {
 }
 
 static AerialViewWindow get_view_window(int argc, char *argv[]) {
-  ARGINTEGER_TYPE opt_embed;
+  ARGINTEGER_TYPE opt_embed, opt_offset_x = 0, opt_offset_y = 0,
+                             opt_offset_width = 1, opt_offset_height = 1;
   ARGSTRING_TYPE opt_font, opt_config;
 
   ARGBEGIN
   OPTION("-embed")
   opt_embed = ARGINTEGER;
+  OPTION("-offset_x")
+  opt_offset_x = ARGINTEGER;
+  OPTION("-offset_y")
+  opt_offset_y = ARGINTEGER;
+  OPTION("-offset_width")
+  opt_offset_width = ARGINTEGER;
+  OPTION("-offset_height")
+  opt_offset_height = ARGINTEGER;
   OPTION("-font")
   opt_font = ARGSTRING;
   OPTION("-config")
   opt_config = ARGSTRING;
   OPTION("--finish")
-  return AerialViewWindow{(Window)opt_embed, opt_config, opt_font};
+  return AerialViewWindow{(Window)opt_embed,
+                          opt_config,
+                          opt_font,
+                          (unsigned)opt_offset_x,
+                          (unsigned)opt_offset_y,
+                          (unsigned)opt_offset_width,
+                          (unsigned)opt_offset_height};
   ARGEND
 
   abort();
@@ -144,26 +163,32 @@ static void run_st_window(Display *display, Window embed, const char *font,
 #define YPIXEL(WINSIZE, VAL) (WINSIZE.ws_ypixel * (VAL) / WINSIZE.ws_row)
 
 AerialViewWindow::AerialViewWindow(Window embed, const char *config,
-                                   const char *font)
+                                   const char *font, unsigned offset_x,
+                                   unsigned offset_y, unsigned offset_width,
+                                   unsigned offset_height)
     : m_display{XOpenDisplay(NULL)}, m_parent{embed} {
   m_parent_winsize = get_terminal_size(m_display, m_parent);
   run_st_window(m_display, embed, font, config);
+  m_offset_x = offset_x;
+  m_offset_y = offset_y;
+  m_offset_width = offset_width;
+  m_offset_height = offset_height;
 }
 
 void AerialViewWindow::resize(Window win, unsigned int columns,
                               unsigned int lines) {
-  auto width = XPIXEL(m_parent_winsize, columns);
-  auto height = YPIXEL(m_parent_winsize, lines);
+  auto width = XPIXEL(m_parent_winsize, columns) + m_offset_width;
+  auto height = YPIXEL(m_parent_winsize, lines) + m_offset_height;
   XResizeWindow(m_display, win, width, height);
   XFlush(m_display);
 }
 
 void AerialViewWindow::move_resize(Window win, int col_x, int row_y,
                                    unsigned int columns, unsigned int lines) {
-  auto x = XPIXEL(m_parent_winsize, col_x);
-  auto y = YPIXEL(m_parent_winsize, row_y);
-  auto width = XPIXEL(m_parent_winsize, columns);
-  auto height = YPIXEL(m_parent_winsize, lines);
+  auto x = XPIXEL(m_parent_winsize, col_x) + m_offset_x;
+  auto y = YPIXEL(m_parent_winsize, row_y) + m_offset_y;
+  auto width = XPIXEL(m_parent_winsize, columns) + m_offset_width;
+  auto height = YPIXEL(m_parent_winsize, lines) + m_offset_height;
   XMoveResizeWindow(m_display, win, x, y, width, height);
   XFlush(m_display);
   m_preview_show_x = x;
@@ -173,15 +198,15 @@ void AerialViewWindow::move_resize(Window win, int col_x, int row_y,
 void AerialViewWindow::hide_resize(Window win, int col_x, int row_y,
                                    unsigned int columns, unsigned int lines) {
   resize(win, columns, lines);
-  auto x = XPIXEL(m_parent_winsize, col_x);
-  auto y = YPIXEL(m_parent_winsize, row_y);
+  auto x = XPIXEL(m_parent_winsize, col_x) + m_offset_x;
+  auto y = YPIXEL(m_parent_winsize, row_y) + m_offset_y;
   m_preview_show_x = x;
   m_preview_show_y = y;
 }
 
 void AerialViewWindow::move(Window win, int col_x, int row_y) {
-  auto x = XPIXEL(m_parent_winsize, col_x);
-  auto y = YPIXEL(m_parent_winsize, row_y);
+  auto x = XPIXEL(m_parent_winsize, col_x) + m_offset_x;
+  auto y = YPIXEL(m_parent_winsize, row_y) + m_offset_y;
   XMoveWindow(m_display, win, x, y);
   XFlush(m_display);
   m_preview_show_x = x;

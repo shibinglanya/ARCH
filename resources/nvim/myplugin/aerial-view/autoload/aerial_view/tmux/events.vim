@@ -4,6 +4,9 @@ function! aerial_view#tmux#events#init()
 """ '初始化: tmux_events'
   let s:pane = aerial_view#tmux#api#get_pane()
 
+  call aerial_view#tmux#api#register_hook('after-resize-pane', 
+        \ function('s:after_resize_pane'))
+
   call aerial_view#tmux#api#register_hook('pane-focus-in', 
         \ function('s:pane_focus_in'))
 
@@ -23,12 +26,24 @@ function! aerial_view#tmux#events#init()
 endfunction
 
 function! aerial_view#tmux#events#destroy()
+  call aerial_view#tmux#api#unregister_hook('after-resize-pane')
   call aerial_view#tmux#api#unregister_hook('pane-focus-in')
   call aerial_view#tmux#api#unregister_hook('session-window-changed')
   call aerial_view#tmux#api#unregister_window_hook('pane-mode-changed')
   call aerial_view#tmux#api#unregister_hook('client-attached')
   call aerial_view#tmux#api#unregister_hook('client-detached')
   call aerial_view#tmux#api#unregister_window_hook('client-session-changed')
+endfunction
+
+function! s:after_resize_pane()
+  let ret = aerial_view#tmux#api#get_zoom_state()
+  if ret == 0
+""" 'TMUX事件: {PANE: %s} {after_resize_pane 触发: 离开}', s:pane
+    doautocmd User AerialViewTMUXLeave
+  elseif ret == 1
+""" 'TMUX事件: {PANE: %s} {after_resize_pane 触发: 进入}', s:pane
+    doautocmd User AerialViewTMUXEnter
+  endif
 endfunction
 
 function! s:pane_focus_in()

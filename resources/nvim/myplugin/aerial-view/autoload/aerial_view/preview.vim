@@ -80,6 +80,17 @@ function! aerial_view#preview#hide(who)
 endfunction
 
 function! aerial_view#preview#show(who)
+  if !aerial_view#preview#active()
+    call aerial_view#preview#open('aerial_view#preview#show', 
+          \ s:preview.font, s:preview.win_columns)
+    return
+  endif
+  let windowid = s:get_windowid()
+  if windowid != s:preview.parent_windowid
+""" '由 aerial_view#preview#show 触发的父窗口调整: {src: %d, dst: %d}', s:preview.parent_windowid, windowid
+    let s:preview.parent_windowid = windowid
+    call s:reparent(windowid)
+  endif
   if s:preview.is_hidden
     call s:show()
   endif
@@ -135,7 +146,7 @@ endfunction
 
 function! s:tmux_focus_enter()
   if !aerial_view#preview#active()
-    call aerial_view#preview#open('aerial_view#preview#show', 
+    call aerial_view#preview#open('tmux_focus_enter', 
           \ s:preview.font, s:preview.win_columns)
     return
   endif
