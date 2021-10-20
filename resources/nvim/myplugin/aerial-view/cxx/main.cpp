@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 
 static AerialViewWindow get_view_window(int argc, char *argv[]) {
   ARGINTEGER_TYPE opt_embed, opt_offset_x = 0, opt_offset_y = 0,
-                             opt_offset_width = 1, opt_offset_height = 1;
+                             opt_offset_width = 1, opt_offset_height = 0;
   ARGSTRING_TYPE opt_font, opt_config;
 
   ARGBEGIN
