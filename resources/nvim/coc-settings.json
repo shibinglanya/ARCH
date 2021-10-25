@@ -4,11 +4,11 @@
             "command": "ccls",
             "filetypes": [ "cpp" ],
             "initializationOptions": {
-                "cache": { "directory": "" },
+                "cache": { "directory": "/tmp/.ccls-cache" },
                 "index": { "onChange": true },
                 "diagnostics": { "onChange": 1 },
                 "clang": {
-                    "extraArgs": [ "-std=c++20", "-Wall", "-Wextra" ]
+                    "extraArgs": [ "-std=c++20", "-Wall", "-Wextra"]
                 },
                 "highlight": { "lsRanges" : true }
             }
@@ -17,7 +17,7 @@
             "command": "ccls",
             "filetypes": [ "c" ],
             "initializationOptions": {
-                "cache": { "directory": "" },
+                "cache": { "directory": "/tmp/.ccls-cache" },
                 "index": { "onChange": true },
                 "diagnostics": { "onChange": 1 },
                 "clang": { "extraArgs": [ "-std=c11" ] },
