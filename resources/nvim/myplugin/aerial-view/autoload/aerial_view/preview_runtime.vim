@@ -52,7 +52,6 @@ function! s:timer_always(time, callback)
   return timer_start(a:time, a:callback, {'repeat': -1})
 endfunction
 
-cd /tmp
 set nowrap
 set statusline=
 set cursorline
