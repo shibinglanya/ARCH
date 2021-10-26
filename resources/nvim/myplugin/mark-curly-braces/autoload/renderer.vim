@@ -1,10 +1,3 @@
-if get(g:, 'mcb_debug_disabled', 0)
-  let echo_file = '/tmp/mcb_debug.log'
-  "call debug#display('renderer.vim', 's:update_sign_of_win_below')
-  "call debug#display('renderer.vim', 's:update_sign_of_win_above')
-  execute debug#enter(expand('<sfile>'), expand('<slnum>') + 1, echo_file)
-endif
-
 function! s:create_win(win_x, win_y, width, height, bufnr, priority)
   let opts = {'relative': 'win', 'width': a:width, 'height': a:height,
       \ 'row': a:win_y, 'col': a:win_x, 'zindex': a:priority,
@@ -35,7 +28,7 @@ function! s:is_valid_bufnr(bufnr)
 endfunction
 
 function! s:close_win(wid)
-  if s:is_valid_win(a:wid)
+  if s:is_valid_win(a:wid) && getcmdwintype() == ''
     call nvim_win_close(a:wid, 1)
   endif
 endfunction
@@ -64,8 +57,12 @@ function! s:mcb_close_win(mcb_win)
   let a:mcb_win.wid        = -1
 endfunction
 
-function! s:mcb_close_all_win()
-  let closed_winnr = win_id2win(expand('<afile>'))
+function! s:mcb_close_all_win(...)
+  if len(a:000) == 1 && a:1 == 'WinClosed'
+    let closed_winnr = win_id2win(expand('<afile>'))
+  else
+    let closed_winnr = winnr()
+  endif
   let mcb_renderer = getwinvar(closed_winnr, 'mcb_renderer', {})
   if !empty(mcb_renderer)
     call s:mcb_close_win(mcb_renderer.win_in_middle)
@@ -360,7 +357,7 @@ function! renderer#init()
 		autocmd!
     autocmd User MCB_CurlyBracesListChanged,MCB_CursorMoved call s:renderer(300)
     autocmd User MCB_SignChanged call s:update_signs()
-    autocmd WinClosed * call s:mcb_close_all_win()
+    autocmd WinClosed * call s:mcb_close_all_win('WinClosed')
     autocmd WinNew,VimEnter  * call s:init()
 	augroup END
 endfunction

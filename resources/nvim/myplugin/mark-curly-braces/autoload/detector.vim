@@ -1,9 +1,3 @@
-if get(g:, 'mcb_debug_disabled', 0)
-  let echo_file = '/tmp/mcb_debug.log'
-  call debug#display('detector.vim', 's:detector')
-  execute debug#enter(expand('<sfile>'), expand('<slnum>') + 1, echo_file)
-endif
-
 let s:update_timer = {  }
 function! s:update_timer.clone(winnr, mandatory) abort
     call setwinvar(a:winnr, 'mcb_detector_update_id', 
@@ -104,6 +98,8 @@ function! s:detector(winnr, mandatory)
   endif
   let [beg_lnum, beg_col] = s:searchpair(a:winnr, '{', '', '}', 'b')
   let [end_lnum, end_col] = s:searchpair(a:winnr, '{', '', '}', '')
+
+""" 's:detector 侦测, %s, %s', [beg_lnum, beg_col], [end_lnum, end_col]
 
   if beg_lnum == 0 || end_lnum == 0 || beg_lnum > end_lnum
     let [beg_lnum, beg_col] = [0, 0]
