@@ -130,7 +130,7 @@ endfunction
 function! s:timer_start_detector()
   for winid in win_findbuf(bufnr()) 
     let winnr = win_id2win(winid)
-    call timer_start(60, s:update_timer.clone(winnr, 0).task, {'repeat': 1})
+    call timer_start(100, s:update_timer.clone(winnr, 0).task, {'repeat': 1})
   endfor
 endfunction
 
@@ -139,6 +139,6 @@ function! detector#init()
         \ { 'repeat': -1 })
   augroup MarkCurlyBracesDetector
     autocmd!
-    autocmd CursorHold,CursorHoldI * call s:timer_start_detector()
+    autocmd CursorMoved,CursorMovedI * call s:timer_start_detector()
   augroup END
 endfunction
