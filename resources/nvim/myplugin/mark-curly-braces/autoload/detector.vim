@@ -11,12 +11,14 @@ function! s:update_timer.clone(winnr, mandatory) abort
         if self.id == getwinvar(self.winnr, 'mcb_detector_update_id', -1)
           call win_execute(winid, 'call s:detector(self.winnr, self.mandatory)')
           return
+        else
+          doautocmd User MCB_CurlyBracesWillChange
         endif
-        let mcb_curly_braces = getwinvar(self.winnr, 'mcb_curly_braces', {})
-        if !empty(mcb_curly_braces) && [line('w0'), line('w$')] != 
-              \ [mcb_curly_braces.first_lnum, mcb_curly_braces.last_lnum]
-          call win_execute(winid, 'call s:detector(self.winnr, self.mandatory)')
-        endif
+        "let mcb_curly_braces = getwinvar(self.winnr, 'mcb_curly_braces', {})
+        "if !empty(mcb_curly_braces) && [line('w0'), line('w$')] != 
+        "      \ [mcb_curly_braces.first_lnum, mcb_curly_braces.last_lnum]
+        "  call win_execute(winid, 'call s:detector(self.winnr, self.mandatory)')
+        "endif
     endfunction
     return l:other_timer
 endfunction
@@ -47,10 +49,10 @@ function! s:detect_win_size_change(timer)
       return
     endif
     let size1 = getwinvar(winnr, 'mcb_win_size', [])
-    call win_execute(win_getid(winnr), 'let n1 = line("w0")')
-    call win_execute(win_getid(winnr), 'let n2 = line("w$")')
-    let size2 = [win_screenpos(winnr), winwidth(winnr), winheight(winnr), 
-          \ n1, n2]
+    "call win_execute(win_getid(winnr), 'let n1 = line("w0")')
+    "call win_execute(win_getid(winnr), 'let n2 = line("w$")')
+    let size2 = [win_screenpos(winnr), winwidth(winnr), winheight(winnr)]
+          "\ , n1, n2]
     if size1 != size2
       call setwinvar(winnr, 'mcb_win_size', size2)
       call timer_start(0, s:update_timer.clone(winnr, 1).task, {'repeat': 1})
@@ -116,7 +118,7 @@ function! s:detector(winnr, mandatory)
   if a:mandatory || mcb_curly_braces != new_mcb_curly_braces
     call setwinvar(a:winnr, 'mcb_curly_braces', new_mcb_curly_braces)
     let g:mcb_curly_braces_winnr = a:winnr
-    doautocmd User MCB_CurlyBracesListChanged
+    doautocmd User MCB_CurlyBracesChanged
   else
     call s:detect_sign([beg_lnum, beg_col], [end_lnum, end_col])
   endif

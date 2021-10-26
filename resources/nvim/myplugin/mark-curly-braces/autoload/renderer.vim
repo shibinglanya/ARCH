@@ -355,8 +355,9 @@ endfunction
 function! renderer#init()
 	augroup MarkCurlyBracesRenderer
 		autocmd!
-    autocmd User MCB_CurlyBracesListChanged,MCB_CursorMoved call s:renderer(300)
+    autocmd User MCB_CurlyBracesChanged call s:renderer(300)
     autocmd User MCB_SignChanged call s:update_signs()
+    autocmd User MCB_CurlyBracesWillChange call s:mcb_close_all_win('WinClosed')
     autocmd WinClosed * call s:mcb_close_all_win('WinClosed')
     autocmd WinNew,VimEnter  * call s:init()
 	augroup END
