@@ -444,7 +444,7 @@ Plug 'lambdalisue/suda.vim'
 Plug '~/.config/nvim/myplugin/mark-curly-braces' {
   nmap <silent> <leader>i <plug>(mcb-toggle)
 	"autocmd VimEnter * hi MarkCurlyBraces cterm=bold ctermfg =	237
-  "let g:mcb_debug_disabled = 1
+  "let g:mcb_log_file = '/tmp/mcb.log'
 }
 
 Plug '~/.config/nvim/myplugin/aerial-view' {
@@ -457,6 +457,7 @@ Plug '~/.config/nvim/myplugin/aerial-view' {
     endif
   endif
 }
+
 "Plug 'iamcco/mathjax-support-for-mkdp'
 
 

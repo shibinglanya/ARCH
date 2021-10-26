@@ -1,3 +1,4 @@
+let g:mcb_log_file = get(g:, 'mcb_log_file', '')
 
 if !empty(g:mcb_log_file)
   if log#init(g:mcb_log_file) == 0
