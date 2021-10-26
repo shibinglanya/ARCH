@@ -55,7 +55,7 @@ function! s:mcb_create_win(mcb_win, win_x, win_y, priority, lines)
   let win_width  = max(map(copy(a:lines), 'strdisplaywidth(v:val)'))
   let a:mcb_win.wid = s:create_win(a:win_x, a:win_y, win_width, win_height, 
         \ a:mcb_win.bufnr, a:priority)
-  call deletebufline(a:mcb_win.bufnr, 1, '$')
+  "如果text是个列表，将替换多行。
   call setbufline(a:mcb_win.bufnr, 1, a:lines)
 endfunction
 
