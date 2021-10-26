@@ -9,4 +9,4 @@ LIBS = -L$(X11LIB) -lX11
 CC = g++
 
 install: main.cpp arg.hpp
-	$(CC) main.cpp -o main $(INCS) $(LIBS)
+	$(CC) main.cpp -O3 -o main $(INCS) $(LIBS)
