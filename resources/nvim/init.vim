@@ -103,8 +103,8 @@ Plug 'vim-airline/vim-airline' {
   "关闭空白符号统计
   let g:airline#extensions#whitespace#enabled = 0
 
-  let airline#extensions#coc#warning_symbol = '⚠ '
-  let airline#extensions#coc#error_symbol = '✘ '
+  let airline#extensions#coc#warning_symbol = '⚡'
+  let airline#extensions#coc#error_symbol =   '✘ '
 
 	if !exists('g:airline_symbols')
 		let g:airline_symbols = {}
@@ -526,6 +526,10 @@ Plug '~/.config/nvim/myplugin/gundo.vim' {
   let g:gundo_return_on_revert = 0
   let g:gundo_auto_preview = 1
   nnoremap <silent> <leader>u :GundoToggle<CR>
+}
+
+Plug 'ryanoasis/vim-devicons' {
+
 }
 
 call plug#end()
