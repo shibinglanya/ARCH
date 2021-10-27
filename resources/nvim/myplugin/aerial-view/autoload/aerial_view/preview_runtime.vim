@@ -57,11 +57,12 @@ set statusline=
 set cursorline
 set laststatus=0
 set signcolumn=no
-set cmdheight=1
 set hidden
 set noautoread
-set shortmess+=c
 set noshowcmd
+set shortmess+=atc
+
+set cmdheight=2
 
 autocmd VimLeavePre * SocketExec 'call aerial_view#preview#close("preview_runtime")'
 
