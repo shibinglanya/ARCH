@@ -281,6 +281,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} {
 	nmap <silent>           -     <Plug>(coc-diagnostic-prev)
 	nmap <silent>           =     <Plug>(coc-diagnostic-next)
 	nmap <silent>          gd     <Plug>(coc-definition)
+	nmap <silent>          gj     <Plug>(coc-declaration)
 	nmap <silent>          gi     <Plug>(coc-implementation)
 	nmap <silent>          gr     <Plug>(coc-references)
 	nmap <silent>          gt     <Plug>(coc-type-definition)
