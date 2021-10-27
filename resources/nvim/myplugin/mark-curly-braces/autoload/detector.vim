@@ -12,7 +12,11 @@ function! s:update_timer.clone(winnr, mandatory) abort
           call win_execute(winid, 'call s:detector(self.winnr, self.mandatory)')
           return
         else
-          doautocmd User MCB_CurlyBracesWillChange
+          let mcb_curly_braces = getwinvar(self.winnr, 'mcb_curly_braces', {})
+          if !empty(mcb_curly_braces) && [line('w0'), line('w$')] != 
+                \ [mcb_curly_braces.first_lnum, mcb_curly_braces.last_lnum]
+            doautocmd User MCB_CurlyBracesWillChange
+          endif
         endif
         "let mcb_curly_braces = getwinvar(self.winnr, 'mcb_curly_braces', {})
         "if !empty(mcb_curly_braces) && [line('w0'), line('w$')] != 
