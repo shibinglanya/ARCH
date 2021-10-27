@@ -121,6 +121,9 @@ function configure_fonts {
 	su - $USER_NAME -c "cd $WORKDIR/resources/fonts/nerd-fonts-source-code-pro; yes ' ' | makepkg -si"
     fi
 
+    #显示彩色emoji
+    cp -rf $WORKDIR/resources/fonts/.fonts.conf .
+
     cp -rf $WORKDIR/resources/fonts/windows /usr/share/fonts/.
     #解决airline三角箭头有缝隙问题。
     cp -f $WORKDIR/resources/fonts/Sauce\ Code\ Pro\ Nerd\ Font\ Complete\ Mono.ttf /usr/share/fonts/TTF/.
