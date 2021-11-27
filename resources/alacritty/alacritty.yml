@@ -411,7 +411,7 @@ cursor:
     #   - Off: Disable blinking by default
     #   - On: Enable blinking by default
     #   - Always: Force the cursor to always blink
-    blinking: Off
+    blinking: Always
 
   # Vi mode cursor style
   #
@@ -422,7 +422,7 @@ cursor:
   vi_mode_style: Block
 
   # Cursor blinking interval in milliseconds.
-  blink_interval: 650
+  blink_interval: 500
 
   # If this is `true`, the cursor will be rendered as a hollow box when the
   # window is not focused.
