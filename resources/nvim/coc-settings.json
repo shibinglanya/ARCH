@@ -5,12 +5,12 @@
             "filetypes": [ "cpp" ],
             "initializationOptions": {
                 "cache": { "directory": "/tmp/.ccls-cache" },
-                "index": { "onChange": true },
-                "diagnostics": { "onChange": 1 },
+                "index": { "onChange": true, "threads": 4 },
                 "clang": {
-                    "extraArgs": [ "-std=c++20", "-Wall", "-Wextra"]
+                    "extraArgs": [ "-std=c++20", "-Wall", "-Wextra" ]
                 },
-                "highlight": { "lsRanges" : true }
+                "highlight": { "lsRanges" : true },
+                "compilationDatabaseDirectory": "./build"
             }
         },
         "ccls-c": {
