@@ -1067,8 +1067,6 @@ void focus(Client *c) {
     detachstack(c);
     attachstack(c);
     grabbuttons(c, 1);
-    if (strcmp(c->name, "Xephyr on :1.0 (ctrl+shift grabs mouse and keyboard)"))
-      XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
     setfocus(c);
   } else {
     XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1380,14 +1378,7 @@ void manage(Window w, XWindowAttributes *wa) {
   }
 
   wc.border_width = c->bw;
-  if (!strcmp(c->name,
-              "Xephyr on :1.0 (ctrl+shift grabs mouse and keyboard)")) {
-    c->x = 0;
-    c->y = 0;
-  }
   XConfigureWindow(dpy, w, CWBorderWidth, &wc);
-  if (strcmp(c->name, "Xephyr on :1.0 (ctrl+shift grabs mouse and keyboard)"))
-    XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
   configure(c); /* propagates border_width, if size doesn't change */
   updatewindowtype(c);
   updatesizehints(c);
@@ -2189,8 +2180,6 @@ void unfocus(Client *c, int setfocus) {
   if (!c)
     return;
   grabbuttons(c, 0);
-  if (strcmp(c->name, "Xephyr on :1.0 (ctrl+shift grabs mouse and keyboard)"))
-    XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
   if (setfocus) {
     XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);

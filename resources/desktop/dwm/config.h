@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 0;        /* border pixel of windows */
+static const unsigned int borderpx  = 4;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 8;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -81,7 +81,6 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,       NULL,       0,            1,   0,         -1 },
 	{ "st",  NULL,       NULL,       0,       1,     0,      -1 },
 	{ "mpv",  NULL,       NULL,       0,       1,     0,      -1 },
-	{ "Xephyr",  NULL,       NULL,       1<<2,       1,     1,      -1 },
 };
 
 /* layout(s) */
