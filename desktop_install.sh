@@ -207,41 +207,41 @@ function configure_desktop {
 
 
   #在DWM中嵌入KDE plasma，启动相关直接写入在dwm.c里。
-  if ! which startplasma-x11 1>/dev/null 2>&1; then
-    installer kde-applications
-    installer plasma
-    installer xorg-server-xephyr
-  fi
+  #if ! which startplasma-x11 1>/dev/null 2>&1; then
+  #  installer kde-applications
+  #  installer plasma
+  #  installer xorg-server-xephyr
+  #fi
 
   #KDE常用软件
-  installer latte-dock
+  #installer latte-dock
   #split -a 2 -d -b 1M app.log.10 child
 
-  if [ ! -d /home/$USER_NAME/Downloads ]; then
-    su - $USER_NAME -c "mkdir Downloads"
-  fi
+  #if [ ! -d /home/$USER_NAME/Downloads ]; then
+  #  su - $USER_NAME -c "mkdir Downloads"
+  #fi
 
   #网易云
-  if [ ! -d /home/$USER_NAME/Downloads/netease-cloud-music ]; then
-    su - $USER_NAME -c "git clone https://gitee.com/xeger/netease-cloud-music.git ~/Downloads/netease-cloud-music --depth 1"
-    /home/$USER_NAME/Downloads/netease-cloud-music/install.sh
-  fi
+  #if [ ! -d /home/$USER_NAME/Downloads/netease-cloud-music ]; then
+  #  su - $USER_NAME -c "git clone https://gitee.com/xeger/netease-cloud-music.git ~/Downloads/netease-cloud-music --depth 1"
+  #  /home/$USER_NAME/Downloads/netease-cloud-music/install.sh
+  #fi
 
-  installer cmake
-  installer qt5-websockets
-  installer python-docopt
-  installer python-numpy
-  installer python-pyaudio
-  installer python-cffi
-  installer python-websockets
-  if [ ! -d /home/$USER_NAME/Downloads/panon ]; then
-    #如果不在kde中使用panon，那么网易云每首歌曲播放之前，会产生卡吨。
-    su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
-    su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale;cd ..; kpackagetool5 -t Plasma/Applet --install plasmoid;kpackagetool5 -t Plasma/Applet --upgrade plasmoid"
-    su - $USER_NAME -c "cd $WORKDIR/resources/panon; cp -rf panon ~/.local/share/plasma/plasmoids/."
-    su - $USER_NAME -c "cd $WORKDIR/resources/kde; cp -rf * ~/.config/."
-    su - $USER_NAME -c "mv ~/.config/Pictures ~/."
-  fi
+  #installer cmake
+  #installer qt5-websockets
+  #installer python-docopt
+  #installer python-numpy
+  #installer python-pyaudio
+  #installer python-cffi
+  #installer python-websockets
+  #if [ ! -d /home/$USER_NAME/Downloads/panon ]; then
+  #  #如果不在kde中使用panon，那么网易云每首歌曲播放之前，会产生卡吨。
+  #  su - $USER_NAME -c "cd ~/Downloads; tar -zxvf $WORKDIR/resources/panon/panon.tar.gz"
+  #  su - $USER_NAME -c "cd ~/Downloads/panon;  mkdir build;cd build;cmake ../translations;make install DESTDIR=../plasmoid/contents/locale;cd ..; kpackagetool5 -t Plasma/Applet --install plasmoid;kpackagetool5 -t Plasma/Applet --upgrade plasmoid"
+  #  su - $USER_NAME -c "cd $WORKDIR/resources/panon; cp -rf panon ~/.local/share/plasma/plasmoids/."
+  #  su - $USER_NAME -c "cd $WORKDIR/resources/kde; cp -rf * ~/.config/."
+  #  su - $USER_NAME -c "mv ~/.config/Pictures ~/."
+  #fi
   
 }
 
